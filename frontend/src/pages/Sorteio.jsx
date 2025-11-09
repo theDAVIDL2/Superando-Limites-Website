@@ -18,6 +18,7 @@ const API = BACKEND_URL ? `${BACKEND_URL}/api` : null;
 export default function Sorteio() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [loadingCep, setLoadingCep] = useState(false);
   const [success, setSuccess] = useState(false);
   const [giveawayData, setGiveawayData] = useState(null);
   const [formData, setFormData] = useState({
@@ -65,6 +66,40 @@ export default function Sorteio() {
     }));
   };
 
+  const handleCepBlur = async () => {
+    const cep = formData.address_zipcode.replace(/\D/g, '');
+    
+    if (cep.length !== 8) return;
+    
+    setLoadingCep(true);
+    
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+      
+      if (data.erro) {
+        toast.error('CEP não encontrado');
+        return;
+      }
+      
+      // Auto-fill address fields
+      setFormData(prev => ({
+        ...prev,
+        address_street: data.logradouro || prev.address_street,
+        address_neighborhood: data.bairro || prev.address_neighborhood,
+        address_city: data.localidade || prev.address_city,
+        address_state: data.uf || prev.address_state
+      }));
+      
+      toast.success('Endereço encontrado!');
+    } catch (error) {
+      console.error('Error fetching CEP:', error);
+      toast.error('Erro ao buscar CEP');
+    } finally {
+      setLoadingCep(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -88,6 +123,9 @@ export default function Sorteio() {
         throw new Error(data.message || 'Erro ao enviar formulário');
       }
 
+      // Mark user as participated in localStorage
+      localStorage.setItem('giveaway-participated', 'true');
+      
       setSuccess(true);
       
       // Smooth scroll to top
@@ -235,16 +273,23 @@ export default function Sorteio() {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
-                          <Label htmlFor="address_zipcode">CEP *</Label>
+                          <Label htmlFor="address_zipcode">
+                            CEP * {loadingCep && <span className="text-amber-600 text-xs ml-2">Buscando...</span>}
+                          </Label>
                           <Input
                             id="address_zipcode"
                             name="address_zipcode"
                             value={formData.address_zipcode}
                             onChange={handleChange}
+                            onBlur={handleCepBlur}
                             required
                             placeholder="12345-678"
+                            maxLength={9}
                             className="mt-1"
                           />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Digite o CEP e saia do campo para preencher automaticamente
+                          </p>
                         </div>
 
                         <div className="md:col-span-2">

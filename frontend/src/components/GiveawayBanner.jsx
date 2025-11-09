@@ -16,6 +16,11 @@ export function GiveawayBanner() {
   useEffect(() => {
     const fetchStatus = async () => {
       if (!API) return;
+      
+      // Check if user already participated
+      const participated = localStorage.getItem('giveaway-participated');
+      if (participated) return;
+      
       try {
         const response = await fetch(`${API}/giveaway/status`);
         const data = await response.json();

@@ -18,6 +18,10 @@ export function GiveawayNotification() {
     const fetchStatus = async () => {
       if (!API) return;
       
+      // Check if user already participated
+      const participated = localStorage.getItem('giveaway-participated');
+      if (participated) return;
+      
       // Check if user has seen modal
       const seen = localStorage.getItem('giveaway-modal-seen');
       if (seen) return;
