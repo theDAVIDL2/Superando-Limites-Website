@@ -55,60 +55,83 @@ export function GiveawayNotification() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-md overflow-hidden">
+      <DialogContent className="sm:max-w-md overflow-hidden border-0 p-0" style={{
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+        border: '1px solid rgba(255, 255, 255, 0.3)'
+      }}>
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', duration: 0.5 }}
+          className="p-6"
         >
-          <DialogHeader>
-            <div className="flex justify-center mb-4">
-              <motion.div
-                animate={{
-                  rotate: [0, -5, 5, -5, 0],
-                  scale: [1, 1.05, 1]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="relative"
-              >
-                <Gift className="h-16 w-16 text-amber-500" />
+          {/* Decorative gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 via-transparent to-orange-50/50 pointer-events-none" />
+          
+          <div className="relative">
+            <DialogHeader>
+              <div className="flex justify-center mb-6">
                 <motion.div
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="absolute -top-1 -right-1"
+                  animate={{
+                    rotate: [0, -5, 5, -5, 0],
+                    scale: [1, 1.05, 1]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="relative p-4 rounded-2xl"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: 'inset 0 2px 4px rgba(255, 255, 255, 0.5), 0 4px 12px rgba(249, 115, 22, 0.15)',
+                    border: '1px solid rgba(249, 115, 22, 0.2)'
+                  }}
                 >
-                  <Sparkles className="h-6 w-6 text-yellow-400" />
+                  <Gift className="h-14 w-14 text-orange-600" strokeWidth={2} />
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="absolute -top-2 -right-2"
+                  >
+                    <Sparkles className="h-7 w-7 text-amber-500" strokeWidth={2.5} />
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            </div>
-            
-            <DialogTitle className="text-center text-2xl font-bold">
-              🎉 Sorteio Especial!
-            </DialogTitle>
-            
-            <DialogDescription className="text-center text-base mt-2">
-              Concorra a uma <span className="font-bold text-amber-600">{giveawayData.prize}</span>!
-              <br />
-              Participe gratuitamente preenchendo um formulário rápido.
-            </DialogDescription>
-          </DialogHeader>
+              </div>
+              
+              <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+                Sorteio Especial!
+              </DialogTitle>
+              
+              <DialogDescription className="text-center text-base mt-3 text-gray-700 leading-relaxed">
+                Concorra a {giveawayData.prize}
+                <br />
+                <span className="text-sm text-gray-600">Participe gratuitamente preenchendo um formulário rápido</span>
+              </DialogDescription>
+            </DialogHeader>
 
-          <div className="mt-6 space-y-3">
-            <Button
-              onClick={handleParticipate}
-              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all"
-              size="lg"
-            >
-              Quero Participar! 🎁
-            </Button>
-            
-            <Button
-              onClick={() => setIsOpen(false)}
-              variant="ghost"
-              className="w-full"
-            >
-              Talvez depois
-            </Button>
+            <div className="mt-8 space-y-3">
+              <Button
+                onClick={handleParticipate}
+                className="w-full font-bold shadow-lg hover:shadow-xl transition-all duration-300 text-white border-0"
+                size="lg"
+                style={{
+                  background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                  boxShadow: '0 4px 15px 0 rgba(249, 115, 22, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                }}
+              >
+                <Gift className="h-5 w-5 mr-2" />
+                Quero Participar!
+              </Button>
+              
+              <Button
+                onClick={() => setIsOpen(false)}
+                variant="ghost"
+                className="w-full text-gray-600 hover:text-gray-800 hover:bg-gray-100/50"
+              >
+                Talvez depois
+              </Button>
+            </div>
           </div>
         </motion.div>
       </DialogContent>

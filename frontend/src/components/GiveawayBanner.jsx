@@ -59,23 +59,39 @@ export function GiveawayBanner() {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: -100, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed top-0 left-0 right-0 z-[100] bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 shadow-xl"
+        className="fixed top-0 left-0 right-0 z-[100]"
+        style={{
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.95) 0%, rgba(249, 115, 22, 0.95) 50%, rgba(234, 88, 12, 0.95) 100%)',
+          boxShadow: '0 8px 32px 0 rgba(249, 115, 22, 0.37), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.18)'
+        }}
       >
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 flex-1">
+        <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4 flex-1">
             <motion.div
-              animate={{ rotate: [0, -10, 10, -10, 0], scale: [1, 1.1, 1] }}
+              animate={{ 
+                rotate: [0, -10, 10, -10, 0], 
+                scale: [1, 1.15, 1],
+                filter: ['drop-shadow(0 0 0px rgba(255,255,255,0))', 'drop-shadow(0 0 8px rgba(255,255,255,0.6))', 'drop-shadow(0 0 0px rgba(255,255,255,0))']
+              }}
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+              className="p-2 rounded-xl"
+              style={{
+                background: 'rgba(255, 255, 255, 0.2)',
+                boxShadow: 'inset 0 2px 4px rgba(255, 255, 255, 0.3)'
+              }}
             >
-              <Gift className="h-6 w-6 text-white" />
+              <Gift className="h-5 w-5 text-white" strokeWidth={2.5} />
             </motion.div>
             
             <div className="flex-1">
-              <p className="text-white font-bold text-sm md:text-base">
-                🎁 Sorteio: {giveawayData.prize}!
-                <span className="ml-2 text-amber-100 font-normal hidden sm:inline">
-                  Participe grátis e concorra!
-                </span>
+              <p className="text-white font-bold text-sm md:text-base tracking-wide" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+                Sorteio Especial: {giveawayData.prize}
+              </p>
+              <p className="text-white/90 text-xs md:text-sm hidden sm:block" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
+                Participe gratuitamente e concorra agora!
               </p>
             </div>
           </div>
@@ -84,17 +100,27 @@ export function GiveawayBanner() {
             <Button
               onClick={handleParticipate}
               size="sm"
-              className="bg-white text-orange-600 hover:bg-amber-50 font-bold shadow-lg hover:shadow-xl transition-all"
+              className="font-bold shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20"
+              style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                color: '#ea580c',
+                backdropFilter: 'blur(10px)'
+              }}
             >
               Participar
             </Button>
             
             <button
               onClick={handleDismiss}
-              className="text-white hover:text-amber-100 transition-colors p-1"
+              className="transition-all duration-300 p-2 rounded-lg hover:scale-110"
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: 'inset 0 2px 4px rgba(255, 255, 255, 0.2)'
+              }}
               aria-label="Fechar"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4 text-white" strokeWidth={2.5} />
             </button>
           </div>
         </div>

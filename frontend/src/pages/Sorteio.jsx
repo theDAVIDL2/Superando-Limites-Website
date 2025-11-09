@@ -58,11 +58,33 @@ export default function Sorteio() {
     fetchStatus();
   }, [navigate]);
 
+  const formatCEP = (value) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 5) return numbers;
+    return `${numbers.slice(0, 5)}-${numbers.slice(5, 8)}`;
+  };
+
+  const formatWhatsApp = (value) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 2) return numbers;
+    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    if (numbers.length <= 11) return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
+    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    let formattedValue = value;
+    if (name === 'address_zipcode') {
+      formattedValue = formatCEP(value);
+    } else if (name === 'whatsapp') {
+      formattedValue = formatWhatsApp(value);
+    }
+    
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : formattedValue
     }));
   };
 
@@ -147,7 +169,9 @@ export default function Sorteio() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-white dark:from-zinc-900 dark:via-zinc-950 dark:to-black py-12 px-4">
+    <div className="min-h-screen py-12 px-4" style={{
+      background: 'linear-gradient(135deg, #fef3c7 0%, #ffffff 50%, #fed7aa 100%)'
+    }}>
       <div className="max-w-3xl mx-auto">
         {/* Back button */}
         <motion.div
@@ -158,7 +182,7 @@ export default function Sorteio() {
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
-            className="gap-2"
+            className="gap-2 hover:bg-white/50 backdrop-blur-sm"
           >
             <ArrowLeft className="h-4 w-4" />
             Voltar
@@ -174,21 +198,36 @@ export default function Sorteio() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              <Card className="shadow-2xl border-amber-200">
-                <CardHeader className="text-center pb-8">
+              <Card className="shadow-2xl border-0 overflow-hidden" style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px) saturate(180%)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+                border: '1px solid rgba(255, 255, 255, 0.3)'
+              }}>
+                <CardHeader className="text-center pb-8" style={{
+                  background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%)',
+                  borderBottom: '1px solid rgba(249, 115, 22, 0.1)'
+                }}>
                   <motion.div
                     animate={{ rotate: [0, -5, 5, -5, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
                     className="flex justify-center mb-4"
                   >
-                    <Gift className="h-16 w-16 text-amber-500" />
+                    <div className="p-4 rounded-2xl" style={{
+                      background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(249, 115, 22, 0.15) 100%)',
+                      backdropFilter: 'blur(10px)',
+                      boxShadow: 'inset 0 2px 4px rgba(255, 255, 255, 0.5), 0 4px 12px rgba(249, 115, 22, 0.15)',
+                      border: '1px solid rgba(249, 115, 22, 0.2)'
+                    }}>
+                      <Gift className="h-14 w-14 text-orange-600" strokeWidth={2} />
+                    </div>
                   </motion.div>
                   
-                  <CardTitle className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  <CardTitle className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
                     Sorteio: {giveawayData.prize}
                   </CardTitle>
                   
-                  <CardDescription className="text-base mt-2">
+                  <CardDescription className="text-base mt-2 text-gray-700">
                     Preencha todos os campos para participar
                   </CardDescription>
                 </CardHeader>
@@ -197,7 +236,7 @@ export default function Sorteio() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Personal Info */}
                     <div className="space-y-4">
-                      <h3 className="font-semibold text-lg">Informações Pessoais</h3>
+                      <h3 className="font-semibold text-lg text-gray-800 pb-2 border-b-2 border-orange-200">Informações Pessoais</h3>
                       
                       <div>
                         <Label htmlFor="full_name">Nome Completo *</Label>
@@ -269,7 +308,7 @@ export default function Sorteio() {
 
                     {/* Address */}
                     <div className="space-y-4">
-                      <h3 className="font-semibold text-lg">Endereço para Entrega</h3>
+                      <h3 className="font-semibold text-lg text-gray-800 pb-2 border-b-2 border-orange-200">Endereço para Entrega</h3>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
@@ -375,7 +414,11 @@ export default function Sorteio() {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-6 text-lg shadow-lg hover:shadow-xl transition-all"
+                      className="w-full text-white font-bold py-6 text-lg shadow-lg hover:shadow-xl transition-all border-0"
+                      style={{
+                        background: loading ? '#9ca3af' : 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                        boxShadow: loading ? 'none' : '0 4px 15px 0 rgba(249, 115, 22, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                      }}
                     >
                       {loading ? (
                         <>
@@ -384,7 +427,8 @@ export default function Sorteio() {
                         </>
                       ) : (
                         <>
-                          Participar do Sorteio 🎁
+                          <Gift className="mr-2 h-5 w-5" />
+                          Participar do Sorteio
                         </>
                       )}
                     </Button>
@@ -399,34 +443,52 @@ export default function Sorteio() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', duration: 0.6 }}
             >
-              <Card className="shadow-2xl border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
-                <CardContent className="pt-12 pb-12 text-center">
+              <Card className="shadow-2xl border-0 overflow-hidden" style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px) saturate(180%)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+                border: '1px solid rgba(255, 255, 255, 0.3)'
+              }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-transparent to-green-50/50 pointer-events-none" />
+                <CardContent className="pt-12 pb-12 text-center relative">
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', delay: 0.2, duration: 0.5 }}
                     className="flex justify-center mb-6"
                   >
-                    <CheckCircle2 className="h-24 w-24 text-green-500" />
+                    <div className="p-4 rounded-full" style={{
+                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      boxShadow: '0 10px 40px rgba(16, 185, 129, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3)'
+                    }}>
+                      <CheckCircle2 className="h-16 w-16 text-white" strokeWidth={2.5} />
+                    </div>
                   </motion.div>
 
                   <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="text-3xl font-bold text-green-700 mb-4"
+                    className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4"
                   >
-                    Inscrição Confirmada! 🎉
+                    Inscrição Confirmada!
                   </motion.h2>
 
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="text-lg text-gray-700 mb-8"
+                    className="text-lg text-gray-700 mb-2 font-medium"
                   >
-                    Você está participando do sorteio da {giveawayData.prize}!
-                    <br />
+                    Você está participando do sorteio de {giveawayData.prize}!
+                  </motion.p>
+                  
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.45 }}
+                    className="text-base text-gray-600 mb-8"
+                  >
                     Boa sorte! 🍀
                   </motion.p>
 
@@ -438,7 +500,11 @@ export default function Sorteio() {
                     <Button
                       onClick={() => navigate('/')}
                       size="lg"
-                      className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                      className="font-bold text-white border-0"
+                      style={{
+                        background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                        boxShadow: '0 4px 15px 0 rgba(249, 115, 22, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                      }}
                     >
                       Voltar para o Site
                     </Button>
