@@ -1,0 +1,124 @@
+name: Deployment Status
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  status-check:
+    name: 📊 Deployment Overview
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: 🔍 Detect changes
+        id: changes
+        run: |
+          echo "Analyzing changes..."
+          
+          FRONTEND_CHANGED=$(git diff --name-only HEAD^ HEAD | grep '^frontend/' | grep -v '^frontend/README.md' | grep -v '^frontend/docs/' || echo "")
+          BACKEND_CHANGED=$(git diff --name-only HEAD^ HEAD | grep '^backend/' | grep -v '^backend/README.md' || echo "")
+          DOCS_ONLY=$(git diff --name-only HEAD^ HEAD | grep -E '\.md$|^DOCS/|^docs/' || echo "")
+          
+          echo "frontend_changed=$( [ -n "$FRONTEND_CHANGED" ] && echo 'true' || echo 'false' )" >> $GITHUB_OUTPUT
+          echo "backend_changed=$( [ -n "$BACKEND_CHANGED" ] && echo 'true' || echo 'false' )" >> $GITHUB_OUTPUT
+          echo "docs_only=$( [ -z "$FRONTEND_CHANGED" ] && [ -z "$BACKEND_CHANGED" ] && [ -n "$DOCS_ONLY" ] && echo 'true' || echo 'false' )" >> $GITHUB_OUTPUT
+          
+          echo ""
+          echo "Frontend changed: $( [ -n "$FRONTEND_CHANGED" ] && echo 'YES' || echo 'NO' )"
+          echo "Backend changed: $( [ -n "$BACKEND_CHANGED" ] && echo 'YES' || echo 'NO' )"
+          echo "Docs only: $( [ -z "$FRONTEND_CHANGED" ] && [ -z "$BACKEND_CHANGED" ] && [ -n "$DOCS_ONLY" ] && echo 'YES' || echo 'NO' )"
+
+      - name: 📊 Deployment summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🚀 DEPLOYMENT STATUS REPORT"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "📝 Commit: ${{ github.sha }}"
+          echo "👤 Author: ${{ github.actor }}"
+          echo "💬 Message: ${{ github.event.head_commit.message }}"
+          echo "🌿 Branch: ${{ github.ref_name }}"
+          echo "🕐 Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📦 COMPONENTS STATUS"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          
+          if [ "${{ steps.changes.outputs.frontend_changed }}" == "true" ]; then
+            echo "🎨 FRONTEND: ✅ Changes detected → Build triggered"
+            echo "   - Workflow: frontend-deployment.yml"
+            echo "   - Status: Building..."
+          else
+            echo "🎨 FRONTEND: ⏭️ No changes"
+          fi
+          
+          echo ""
+          
+          if [ "${{ steps.changes.outputs.backend_changed }}" == "true" ]; then
+            echo "🔧 BACKEND: ✅ Changes detected → Build triggered"
+            echo "   - Workflow: backend-deployment.yml"
+            echo "   - Status: Testing & building..."
+          else
+            echo "🔧 BACKEND: ⏭️ No changes"
+          fi
+          
+          echo ""
+          
+          if [ "${{ steps.changes.outputs.docs_only }}" == "true" ]; then
+            echo "📚 DOCUMENTATION: ✅ Updated"
+            echo "   - No deployment needed"
+          fi
+          
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🔗 QUICK LINKS"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "📍 Actions: https://github.com/${{ github.repository }}/actions"
+          echo "📍 Deployments: https://github.com/${{ github.repository }}/deployments"
+          echo "📍 This Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo ""
+
+      - name: 📝 Create summary
+        run: |
+          echo "## 🚀 Deployment Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Author:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.changes.outputs.frontend_changed }}" == "true" ]; then
+            echo "### 🎨 Frontend" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Changes detected - Build workflow triggered" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.changes.outputs.backend_changed }}" == "true" ]; then
+            echo "### 🔧 Backend" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Changes detected - Test & build workflow triggered" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.changes.outputs.docs_only }}" == "true" ]; then
+            echo "### 📚 Documentation" >> $GITHUB_STEP_SUMMARY
+            echo "ℹ️ Documentation updated (no deployment needed)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**📍 [View All Deployments](https://github.com/${{ github.repository }}/deployments)**" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🎯 Status badge update
+        run: |
+          echo "Status tracking complete ✅"
+

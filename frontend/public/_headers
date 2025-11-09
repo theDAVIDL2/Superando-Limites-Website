@@ -1,0 +1,54 @@
+# Cache headers and HTTP/2 Server Push for optimal performance
+
+# Homepage - preload critical assets (AVIF first, WebP fallback)
+/*
+  Link: </images/capa-1024w.avif>; rel=preload; as=image; type=image/avif; fetchpriority=high
+  Link: </images/capa-1024w.webp>; rel=preload; as=image; type=image/webp; fetchpriority=high
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  X-XSS-Protection: 1; mode=block
+  Accept-CH: DPR, Viewport-Width, Width
+
+# Static assets - cache for 1 year (immutable)
+/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images - cache for 1 year (immutable)
+/images/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/webp
+  Vary: Accept
+
+/images/*.avif
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/avif
+  Vary: Accept
+
+# JavaScript bundles - cache for 1 year (immutable)
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# CSS files - cache for 1 year (immutable)
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fonts - cache for 1 year (immutable)
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+/*.ttf
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML - no cache (always revalidate)
+/
+  Cache-Control: public, max-age=0, must-revalidate
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Manifest and service worker - short cache
+/site.webmanifest
+  Cache-Control: public, max-age=86400
+/manifest.json
+  Cache-Control: public, max-age=86400
+

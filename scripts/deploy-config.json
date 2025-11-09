@@ -1,0 +1,22 @@
+{
+  "ssh_host": "your-server.com",
+  "ssh_port": "22",
+  "ssh_user": "your-username",
+  "ssh_password": "YOUR_PASSWORD_HERE",
+  "remote_path": "/public_html",
+  "use_ssh": true,
+  "backup_before_deploy": true,
+  "deployment_notes": {
+    "hostinger": {
+      "note": "Hostinger typically uses port 65002 for SSH",
+      "ssh_port": "65002",
+      "remote_path": "/domains/yourdomain.com/public_html"
+    },
+    "cpanel": {
+      "note": "cPanel typically uses port 22",
+      "ssh_port": "22",
+      "remote_path": "/public_html"
+    }
+  }
+}
+

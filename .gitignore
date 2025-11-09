@@ -1,0 +1,290 @@
+# ===========================
+# Environment & Secrets
+# ===========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+*.env.*
+!.env.example
+.env.backup
+
+# ===========================
+# Python
+# ===========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+*.mo
+*.pot
+.venv/
+venv/
+ENV/
+env/
+.Python
+
+# ===========================
+# Node.js / React
+# ===========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+pids
+*.pid
+*.seed
+*.pid.lock
+package-lock.json.bak
+yarn.lock.bak
+
+# ===========================
+# Build Outputs
+# ===========================
+/frontend/build/
+/frontend/dist/
+/backend/dist/
+*.tsbuildinfo
+next-env.d.ts
+*.log
+
+# ===========================
+# IDEs & Editors
+# ===========================
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.tmproj
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+*.code-workspace
+
+# ===========================
+# OS
+# ===========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ===========================
+# Testing & Coverage
+# ===========================
+coverage/
+.nyc_output/
+test-results/
+*.lcov
+junit.xml
+.jest/
+
+# ===========================
+# Logs
+# ===========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# ===========================
+# Database
+# ===========================
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.mdb
+
+# ===========================
+# Temporary Files
+# ===========================
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*~
+
+# ===========================
+# Archives
+# ===========================
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.dmg
+*.iso
+*.jar
+*.war
+*.ear
+*.gz
+*.bz2
+
+# ===========================
+# Deployment
+# ===========================
+.vercel
+.netlify
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ===========================
+# Cache
+# ===========================
+.cache/
+.parcel-cache/
+.next/
+out/
+.nuxt/
+.cache
+*.cache
+
+# ===========================
+# Misc
+# ===========================
+.eslintcache
+.stylelintcache
+*.tgz
+.npm
+.lock-wscript
+.node_repl_history
+.pnp
+.pnp.js
+
+# ===========================
+# Project Specific
+# ===========================
+# Keep backup files local
+*backup*.zip
+*release*.zip
+Websitebackup*.zip
+
+# Local development utilities
+dev-utils/
+scripts/deploy-config.local.json
+
+# MongoDB data (if running locally)
+data/db/
+mongo-data/
+
+# SSL/TLS certificates (NEVER commit)
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+
+# SSH keys (NEVER commit)
+id_rsa
+id_rsa.pub
+*.ppk
+
+# API keys and secrets (NEVER commit)
+secrets.json
+credentials.json
+service-account*.json
+firebase-adminsdk*.json
+
+# Large media files (use Git LFS if needed)
+# *.mp4
+# *.mov
+# *.avi
+# *.mkv
+# *.psd
+
+# ===========================
+# Keep These Files
+# ===========================
+!.gitkeep
+!.gitignore
+!.github/
+!.vscode/extensions.json
+
+# ===========================
+# Documentation (Keep all docs)
+# ===========================
+!DOCS/
+!*.md
+!README.md
+
+# ===========================
+# GitHub Actions
+# ===========================
+!.github/workflows/
+

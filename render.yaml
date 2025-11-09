@@ -1,0 +1,65 @@
+services:
+  # Backend API Service
+  - type: web
+    name: backend-api
+    runtime: python
+    env: python
+    buildCommand: "cd backend && pip install -r requirements.txt"
+    startCommand: "cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: MONGO_URL
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: N8N_WEBHOOK_LEAD
+        sync: false
+      - key: N8N_WEBHOOK_ORDER
+        sync: false
+      - key: N8N_WEBHOOK_NEWSLETTER
+        sync: false
+      - key: CHECKOUT_PUBLIC_URL
+        sync: false
+      - key: CHECKOUT_PROVIDER
+        value: yampi
+      - key: ADMIN_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        value: openai/gpt-4o-mini
+    autoDeploy: true
+
+  # Frontend Static Site (optional - if you want Render to host frontend)
+  - type: web
+    name: frontend-site
+    runtime: static
+    buildCommand: "cd frontend && npm install && npm run build"
+    staticPublishPath: ./frontend/build
+    envVars:
+      - key: NODE_VERSION
+        value: 20.0.0
+      - key: REACT_APP_API_URL
+        sync: false
+      - key: REACT_APP_ENV
+        value: production
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /static/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    autoDeploy: true
+

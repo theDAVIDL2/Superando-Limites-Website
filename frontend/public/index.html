@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#10b981" />
+        <meta name="description" content="Superando Limites - A história de superação de Sílvio Bernardes, do futebol profissional à odontologia" />
+        
+        <!-- Resource Hints: Preconnect para domínios externos -->
+        <link rel="preconnect" href="https://superandolimites.pay.yampi.com.br" crossorigin>
+        <link rel="dns-prefetch" href="https://superandolimites.pay.yampi.com.br">
+        <!-- AI endpoints (backend + OpenRouter). Ensure BACKEND_URL is HTTPS in production. -->
+        <link rel="preconnect" href="https://openrouter.ai" crossorigin>
+        <link rel="dns-prefetch" href="https://openrouter.ai">
+        
+        <!-- Conditional font loading: Desktop only for optimal mobile performance -->
+        <script>
+          // Only load Google Fonts on desktop or after page loads on mobile (minified)
+          !function(){var e=matchMedia("(min-width:769px)").matches;if(e){var t=document.createElement("link");t.rel="preconnect",t.href="https://fonts.googleapis.com",document.head.appendChild(t);var n=document.createElement("link");n.rel="preconnect",n.href="https://fonts.gstatic.com",n.crossOrigin="anonymous",document.head.appendChild(n);var o=document.createElement("link");o.href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",o.rel="stylesheet",document.head.appendChild(o)}else addEventListener("load",function(){setTimeout(function(){var e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",e.rel="stylesheet",document.head.appendChild(e)},3e3)})}();
+        </script>
+        
+        <!-- Critical CSS inline (above-the-fold) -->
+        <style>
+          /* Reset & Base */
+          *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}
+          html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Helvetica Neue',Arial,sans-serif}
+          body{margin:0;line-height:inherit}
+          h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit;font-display:optional}
+          
+          /* Layout Critical */
+          .min-h-screen{min-height:100vh}
+          .relative{position:relative}
+          .absolute{position:absolute}
+          .inset-0{top:0;right:0;bottom:0;left:0}
+          .pointer-events-none{pointer-events:none}
+          
+          /* Flexbox Critical */
+          .flex{display:flex}
+          .items-center{align-items:center}
+          .justify-center{justify-content:center}
+          .gap-2{gap:0.5rem}
+          .gap-3{gap:0.75rem}
+          .gap-4{gap:1rem}
+          
+          /* Glass Panel Critical */
+          .glass-panel{background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.3)}
+          
+          /* Button Critical */
+          .liquid-btn{position:relative;overflow:hidden;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:600;border-radius:0.75rem;padding:0.75rem 1.5rem;border:none;cursor:pointer;transition:all .3s}
+          .liquid-btn:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(16,185,129,0.3)}
+          
+          /* Typography Critical */
+          .text-4xl{font-size:2.25rem;line-height:2.5rem}
+          .text-xl{font-size:1.25rem;line-height:1.75rem}
+          .font-bold{font-weight:700}
+          .font-semibold{font-weight:600}
+          
+          /* Colors Critical */
+          .text-zinc-900{color:rgb(24 24 27)}
+          .text-emerald-600{color:rgb(5 150 105)}
+          .bg-emerald-600{background-color:rgb(5 150 105)}
+          
+          /* Spacing Critical */
+          .p-4{padding:1rem}
+          .px-4{padding-left:1rem;padding-right:1rem}
+          .py-12{padding-top:3rem;padding-bottom:3rem}
+          .mt-4{margin-top:1rem}
+          .mb-6{margin-bottom:1.5rem}
+          
+          /* Animations Critical */
+          @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+          .animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
+          
+          /* Shadow Critical */
+          .shadow-2xl{box-shadow:0 25px 50px -12px rgba(0,0,0,0.25)}
+          
+          /* Border Radius Critical */
+          .rounded-2xl{border-radius:1rem}
+          .rounded-xl{border-radius:0.75rem}
+          
+          /* Opacity & Transforms */
+          .opacity-0{opacity:0}
+          .opacity-100{opacity:1}
+          .transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}
+          .duration-700{transition-duration:700ms}
+          
+          /* Hide scrollbar initially */
+          html{scroll-behavior:smooth}
+          .overflow-hidden{overflow:hidden}
+          
+          /* Static LCP Image Container - Will be replaced by React */
+          #static-lcp-container{position:relative;width:100%;max-width:580px;margin:0 auto;padding:1rem;display:block!important;visibility:visible!important}
+          #static-lcp-image{display:block!important;width:100%!important;max-width:640px;height:auto;object-fit:cover;border-radius:1rem;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);visibility:visible!important}
+          @media(min-width:1024px){#static-lcp-container{padding:3rem 1rem;max-width:1280px}}
+        </style>
+        
+        <!-- Preload LCP image with matching srcset to speed up decoding on mobile -->
+        <link 
+          rel="preload" 
+          as="image" 
+          imagesrcset="%PUBLIC_URL%/images/capa-640w.webp 640w, %PUBLIC_URL%/images/capa-768w.webp 768w, %PUBLIC_URL%/images/capa-1024w.webp 1024w" 
+          imagesizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 580px" 
+          href="%PUBLIC_URL%/images/capa-1024w.webp" 
+          type="image/webp" 
+          fetchpriority="high"
+        >
+        
+        <!-- Prefetch recursos que serão usados em breve (low priority) -->
+        <link rel="prefetch" href="%PUBLIC_URL%/images/japao-1024w.avif">
+        <link rel="prefetch" href="%PUBLIC_URL%/images/clinica-1024w.avif">
+        <link rel="prefetch" href="%PUBLIC_URL%/images/Palmeiras-768w.avif">
+        
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
+        <link rel="icon" type="image/png" sizes="96x96" href="%PUBLIC_URL%/favicon-96x96.png" />
+        <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
+        <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+        
+        <title>Superando Limites - Sílvio Bernardes</title>
+    </head>
+    <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        
+        <!-- Force light theme on mobile devices (minified and deferred) -->
+        <script>!function(){var e=/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)||matchMedia("(max-width:768px)").matches;if(e){document.documentElement.classList.remove("dark");var t=document.createElement("style");t.textContent="@media (prefers-color-scheme: dark) { :root { color-scheme: light; } }",document.head.appendChild(t);new MutationObserver(function(e){e.forEach(function(e){e.target.classList.contains("dark")&&e.target.classList.remove("dark")})}).observe(document.documentElement,{attributes:!0,attributeFilter:["class"]})}}();</script>
+        
+        <div id="root">
+          <!-- Static LCP Image - Painted immediately, React will hydrate over this -->
+          <div id="static-lcp-container" data-lcp-static="true">
+            <picture>
+              <source
+                type="image/webp"
+                srcset="%PUBLIC_URL%/images/capa-640w.webp 640w, %PUBLIC_URL%/images/capa-768w.webp 768w, %PUBLIC_URL%/images/capa-1024w.webp 1024w"
+                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 580px"
+              />
+              <img
+                id="static-lcp-image"
+                src="%PUBLIC_URL%/images/capa-768w.webp"
+                alt="Superando Limites - Capa do livro"
+                width="640"
+                height="853"
+                fetchpriority="high"
+              />
+            </picture>
+          </div>
+          <!-- Cleanup script: Remove static LCP once React renders -->
+          <script>
+            (function(){
+              var checkInterval = setInterval(function(){
+                var root = document.getElementById('root');
+                var staticLcp = document.querySelector('[data-lcp-static]');
+                // Once React has added content (more than 2 children), remove static image
+                if (root && root.children.length > 2 && staticLcp) {
+                  staticLcp.style.opacity = '0';
+                  staticLcp.style.transition = 'opacity 0.3s';
+                  setTimeout(function(){ 
+                    if(staticLcp && staticLcp.parentNode) {
+                      staticLcp.parentNode.removeChild(staticLcp);
+                    }
+                  }, 300);
+                  clearInterval(checkInterval);
+                }
+              }, 100);
+              // Failsafe: remove after 5 seconds regardless
+              setTimeout(function(){
+                clearInterval(checkInterval);
+                var staticLcp = document.querySelector('[data-lcp-static]');
+                if(staticLcp && staticLcp.parentNode) {
+                  staticLcp.style.opacity = '0';
+                  staticLcp.style.transition = 'opacity 0.3s';
+                  setTimeout(function(){
+                    if(staticLcp && staticLcp.parentNode) staticLcp.parentNode.removeChild(staticLcp);
+                  }, 300);
+                }
+              }, 5000);
+            })();
+          </script>
+        </div>
+        
+        <!-- PostHog Analytics - Temporarily disabled for performance testing -->
+        <!-- 
+        <script>
+            // Load PostHog after 3 seconds or on first user interaction
+            (function() {
+                let posthogLoaded = false;
+                
+                function loadPostHog() {
+                    if (posthogLoaded) return;
+                    posthogLoaded = true;
+                    
+                    // Create and inject PostHog script
+                    !(function (t, e) {
+                        var o, n, p, r;
+                        e.__SV ||
+                            ((window.posthog = e),
+                            (e._i = []),
+                            (e.init = function (i, s, a) {
+                                function g(t, e) {
+                                    var o = e.split(".");
+                                    2 == o.length && ((t = t[o[0]]), (e = o[1])),
+                                        (t[e] = function () {
+                                            t.push(
+                                                [e].concat(
+                                                    Array.prototype.slice.call(
+                                                        arguments,
+                                                        0,
+                                                    ),
+                                                ),
+                                            );
+                                        });
+                                }
+                                ((p = t.createElement("script")).type =
+                                    "text/javascript"),
+                                    (p.crossOrigin = "anonymous"),
+                                    (p.async = !0),
+                                    (p.src =
+                                        s.api_host.replace(
+                                            ".i.posthog.com",
+                                            "-assets.i.posthog.com",
+                                        ) + "/static/array.js"),
+                                    (r =
+                                        t.getElementsByTagName(
+                                            "script",
+                                        )[0]).parentNode.insertBefore(p, r);
+                                var u = e;
+                                for (
+                                    void 0 !== a ? (u = e[a] = []) : (a = "posthog"),
+                                        u.people = u.people || [],
+                                        u.toString = function (t) {
+                                            var e = "posthog";
+                                            return (
+                                                "posthog" !== a && (e += "." + a),
+                                                t || (e += " (stub)"),
+                                                e
+                                            );
+                                        },
+                                        u.people.toString = function () {
+                                            return u.toString(1) + ".people (stub)";
+                                        },
+                                        o =
+                                            "init capture register identify alias reset".split(" "),
+                                        n = 0;
+                                    n < o.length;
+                                    n++
+                                )
+                                    g(u, o[n]);
+                                e._i.push([i, s, a]);
+                            }),
+                            (e.__SV = 1));
+                    })(document, window.posthog || []);
+                    
+                    posthog.init("phc_yJW1VjHGGwmCbbrtczfqqNxgBDbhlhOWcdzcIJEOTFE", {
+                        api_host: "https://us.i.posthog.com",
+                        person_profiles: "identified_only",
+                        autocapture: false,
+                        session_recording: {
+                            maskAllInputs: true,
+                            maskTextSelector: '*',
+                        },
+                        disable_session_recording: true,
+                    });
+                }
+                
+                // Load after 3 seconds
+                setTimeout(loadPostHog, 3000);
+                
+                // Or load on first user interaction
+                ['click', 'scroll', 'touchstart', 'mousemove'].forEach(function(event) {
+                    document.addEventListener(event, loadPostHog, { once: true, passive: true });
+                });
+            })();
+        </script>
+        -->
+    </body>
+</html>
