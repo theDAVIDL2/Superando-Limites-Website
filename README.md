@@ -26,12 +26,7 @@ Landing page moderna e performática para o livro "Superando Limites", desenvolv
 
 ### 🚀 Próximas Funcionalidades
 
-- [ ] Blog sobre os temas do livro
-- [ ] Área de membros
-- [ ] Recursos exclusivos para leitores
-- [ ] Newsletter automatizada
-- [ ] Depoimentos e reviews
-- [ ] Material complementar
+- [ ] Backend completo e funcional
 
 ---
 
