@@ -235,7 +235,7 @@ export default function Sorteio() {
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Personal Info */}
-                    <div className="space-y-4">
+                    <div className="space-y-4 mt-8">
                       <h3 className="font-semibold text-lg text-gray-800 pb-2 border-b-2 border-orange-200">Informações Pessoais</h3>
                       
                       <div>
