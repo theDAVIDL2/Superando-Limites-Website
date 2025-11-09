@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-19.0.0-blue.svg)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110.1-green.svg)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://python.org/)
 [![Live](https://img.shields.io/badge/Live-silviosuperandolimites.com.br-success.svg)](https://silviosuperandolimites.com.br/)
 
 > Website oficial do livro "Superando Limites" de Silvio - Uma plataforma completa para marketing e vendas do livro.
