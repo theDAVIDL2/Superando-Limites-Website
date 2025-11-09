@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI, APIRouter, HTTPException, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
+from supabase import create_client, Client
 import httpx
 import logging
 from pathlib import Path
@@ -11,37 +11,26 @@ from typing import List, Optional
 import uuid
 from datetime import datetime
 
-# New: Import mongomock for testing
-from mongomock import MongoClient as MongoMockClient
-
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Use mongomock for testing if TESTING is set to true
-if os.environ.get("TESTING") == "true":
-    client = MongoMockClient()
-    db = client.get_database(os.environ.get('DB_NAME', 'testdb'))
-    def db_call(coro):
-        return coro
+# Supabase connection
+supabase_url = os.environ.get('SUPABASE_URL', '')
+supabase_key = os.environ.get('SUPABASE_SERVICE_KEY', '')
+
+if not supabase_url or not supabase_key:
+    logging.warning("SUPABASE_URL or SUPABASE_SERVICE_KEY not set. Database operations will fail.")
+    supabase: Optional[Client] = None
 else:
-    # MongoDB connection
-    mongo_url = os.environ['MONGO_URL']
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[os.environ['DB_NAME']]
-    async def db_call(coro):
-        return await coro
+    supabase: Client = create_client(supabase_url, supabase_key)
 
 # Create the main app
 app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
-# Optional n8n webhook integration (env):
-N8N_WEBHOOK_LEAD = os.environ.get("N8N_WEBHOOK_LEAD", "")
-N8N_WEBHOOK_ORDER = os.environ.get("N8N_WEBHOOK_ORDER", "")
-N8N_WEBHOOK_NEWSLETTER = os.environ.get("N8N_WEBHOOK_NEWSLETTER", "")
 
-# Placeholder checkout integration (Yampi/Stripe/etc.)
+# Checkout integration (Yampi/Stripe/etc.)
 CHECKOUT_PUBLIC_URL = os.environ.get("CHECKOUT_PUBLIC_URL", "")
 CHECKOUT_PROVIDER = os.environ.get("CHECKOUT_PROVIDER", "yampi")
 
@@ -49,32 +38,16 @@ CHECKOUT_PROVIDER = os.environ.get("CHECKOUT_PROVIDER", "yampi")
 ADMIN_API_KEY = os.environ.get("ADMIN_API_KEY", "")
 
 # OpenRouter server-side config (for backend proxy)
-OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "openai/gpt-oss-20b:free")
+OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "openai/gpt-3.5-turbo")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_API_KEYS = [k.strip() for k in os.environ.get("OPENROUTER_API_KEYS", "").replace(";", ",").split(",") if k.strip()] or ([OPENROUTER_API_KEY] if OPENROUTER_API_KEY else [])
 
-async def emit_n8n(url: str, payload: dict):
-    if not url:
-        logger.warning("N8N emit skipped: empty URL for payload type=%s", payload.get("type"))
-        return
-    # fire-and-forget: do not block user flow, but log non-2xx responses
-    try:
-        async with httpx.AsyncClient(timeout=8.0) as client_http:
-            resp = await client_http.post(url, json=payload)
-            if resp.status_code < 200 or resp.status_code >= 300:
-                body = None
-                try:
-                    body = resp.text[:500]
-                except Exception:
-                    body = "<unreadable>"
-                logger.warning(
-                    "N8N emit non-2xx: status=%s url=%s body=%s", resp.status_code, url, body
-                )
-            else:
-                logger.info("N8N emit ok: type=%s status=%s", payload.get("type"), resp.status_code)
-    except Exception as e:
-        logger.warning("N8N emit failed: url=%s err=%s", url, str(e))
-
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # Define Models
 class StatusCheck(BaseModel):
@@ -85,7 +58,7 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
-# New: Leads
+# Leads
 class Lead(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     email: EmailStr
@@ -96,7 +69,7 @@ class LeadCreate(BaseModel):
     email: EmailStr
     source: Optional[str] = None
 
-# New: Order Intents (mock of pre-checkout)
+# Order Intents
 class OrderIntent(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     price: float
@@ -125,7 +98,7 @@ class ChatCompletionRequest(BaseModel):
     messages: List[ChatMessage]
     stream: bool = True
 
-# New: Newsletter subscribers
+# Newsletter subscribers
 class Newsletter(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     email: EmailStr
@@ -137,60 +110,107 @@ class NewsletterCreate(BaseModel):
     source: Optional[str] = None
 
 
-# Add your routes to the router instead of directly to app
+# Helper function to check Supabase connection
+def check_supabase():
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Database not configured")
+
+
+# Routes
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello World", "database": "Supabase PostgreSQL"}
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.dict()
-    status_obj = StatusCheck(**status_dict)
-    _ = await db_call(db.status_checks.insert_one(status_obj.dict()))
-    return status_obj
+    check_supabase()
+    status_obj = StatusCheck(**input.dict())
+    data = status_obj.dict()
+    data['timestamp'] = data['timestamp'].isoformat()
+    
+    try:
+        supabase.table('status_checks').insert(data).execute()
+        return status_obj
+    except Exception as e:
+        logger.error(f"Error creating status check: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
-    status_checks = await db_call(db.status_checks.find().to_list(1000))
-    return [StatusCheck(**status_check) for status_check in status_checks]
+    check_supabase()
+    try:
+        result = supabase.table('status_checks').select('*').limit(1000).execute()
+        return [StatusCheck(**item) for item in result.data]
+    except Exception as e:
+        logger.error(f"Error fetching status checks: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 # Leads endpoints
 @api_router.post("/leads", response_model=Lead, status_code=201)
 async def create_lead(input: LeadCreate):
+    check_supabase()
     lead = Lead(**input.dict())
-    existing = await db_call(db.leads.find_one({"email": lead.email}))
-    if existing:
-        # idempotent upsert-like behavior: return existing as Lead
-        return Lead(**existing)
-    await db_call(db.leads.insert_one(lead.dict()))
-    # forward to n8n (JSON-safe payload)
-    await emit_n8n(N8N_WEBHOOK_LEAD, {"type": "lead", "data": lead.model_dump(mode="json")})
-    return lead
+    
+    try:
+        # Check if email already exists
+        existing = supabase.table('leads').select('*').eq('email', lead.email).execute()
+        if existing.data:
+            logger.info(f"Lead already exists: {lead.email}")
+            return Lead(**existing.data[0])
+        
+        # Insert new lead
+        data = lead.dict()
+        data['created_at'] = data['created_at'].isoformat()
+        supabase.table('leads').insert(data).execute()
+        logger.info(f"New lead created: {lead.email}")
+        return lead
+    except Exception as e:
+        logger.error(f"Error creating lead: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @api_router.get("/leads", response_model=List[Lead])
 async def list_leads(request: Request):
+    check_supabase()
     if ADMIN_API_KEY and request.headers.get("x-admin-key") != ADMIN_API_KEY:
         raise HTTPException(status_code=401, detail="unauthorized")
-    items = await db_call(db.leads.find().sort("created_at", -1).to_list(1000))
-    return [Lead(**it) for it in items]
+    
+    try:
+        result = supabase.table('leads').select('*').order('created_at', desc=True).limit(1000).execute()
+        return [Lead(**item) for item in result.data]
+    except Exception as e:
+        logger.error(f"Error fetching leads: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 # Order intents endpoints
 @api_router.post("/orders-intent", response_model=OrderIntent, status_code=201)
 async def create_order_intent(input: OrderIntentCreate):
+    check_supabase()
     oi = OrderIntent(**input.dict())
-    await db_call(db.order_intents.insert_one(oi.dict()))
-    # forward to n8n (JSON-safe payload)
-    await emit_n8n(N8N_WEBHOOK_ORDER, {"type": "order_intent", "data": oi.model_dump(mode="json")})
-    return oi
+    
+    try:
+        data = oi.dict()
+        data['created_at'] = data['created_at'].isoformat()
+        supabase.table('order_intents').insert(data).execute()
+        logger.info(f"Order intent created: {oi.id}")
+        return oi
+    except Exception as e:
+        logger.error(f"Error creating order intent: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @api_router.get("/orders-intent", response_model=List[OrderIntent])
 async def list_order_intents(request: Request):
+    check_supabase()
     if ADMIN_API_KEY and request.headers.get("x-admin-key") != ADMIN_API_KEY:
         raise HTTPException(status_code=401, detail="unauthorized")
-    items = await db_call(db.order_intents.find().sort("created_at", -1).to_list(1000))
-    return [OrderIntent(**it) for it in items]
+    
+    try:
+        result = supabase.table('order_intents').select('*').order('created_at', desc=True).limit(1000).execute()
+        return [OrderIntent(**item) for item in result.data]
+    except Exception as e:
+        logger.error(f"Error fetching order intents: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-# --- Checkout integration scaffold ---
+# Checkout integration scaffold
 @api_router.get("/checkout/config")
 async def checkout_config():
     return {
@@ -200,38 +220,64 @@ async def checkout_config():
 
 @api_router.post("/checkout/start")
 async def checkout_start(payload: CheckoutStart):
-    # Persist an intent if not already stored
+    check_supabase()
+    # Persist an intent
     oi = OrderIntent(price=payload.price, currency=payload.currency, note=payload.note, email=payload.email)
-    await db_call(db.order_intents.insert_one(oi.dict()))
-    await emit_n8n(N8N_WEBHOOK_ORDER, {"type": "order_intent", "data": oi.model_dump(mode="json"), "origin": "checkout_start"})
+    
+    try:
+        data = oi.dict()
+        data['created_at'] = data['created_at'].isoformat()
+        supabase.table('order_intents').insert(data).execute()
+        logger.info(f"Checkout started: {oi.id}")
+    except Exception as e:
+        logger.error(f"Error in checkout start: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-    # For now, just return a redirect URL based on env; later integrate provider API
+    # Return redirect URL based on env
     if CHECKOUT_PUBLIC_URL:
         sep = "&" if "?" in CHECKOUT_PUBLIC_URL else "?"
         url = f"{CHECKOUT_PUBLIC_URL}{sep}email={payload.email or ''}"
         return {"redirect_url": url, "order_intent_id": oi.id}
-    # If not configured, indicate that client should fallback
+    
     return {"redirect_url": None, "order_intent_id": oi.id}
 
 # Newsletter endpoints
 @api_router.post("/newsletter", response_model=Newsletter, status_code=201)
 async def subscribe_newsletter(input: NewsletterCreate):
+    check_supabase()
     sub = Newsletter(**input.dict())
-    existing = await db_call(db.newsletter.find_one({"email": sub.email}))
-    if existing:
-        return Newsletter(**existing)
-    await db_call(db.newsletter.insert_one(sub.dict()))
-    await emit_n8n(N8N_WEBHOOK_NEWSLETTER, {"type": "newsletter", "data": sub.model_dump(mode="json")})
-    return sub
+    
+    try:
+        # Check if email already exists
+        existing = supabase.table('newsletter').select('*').eq('email', sub.email).execute()
+        if existing.data:
+            logger.info(f"Newsletter subscription already exists: {sub.email}")
+            return Newsletter(**existing.data[0])
+        
+        # Insert new subscription
+        data = sub.dict()
+        data['created_at'] = data['created_at'].isoformat()
+        supabase.table('newsletter').insert(data).execute()
+        logger.info(f"Newsletter subscription created: {sub.email}")
+        return sub
+    except Exception as e:
+        logger.error(f"Error creating newsletter subscription: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @api_router.get("/newsletter", response_model=List[Newsletter])
 async def list_newsletter(request: Request):
+    check_supabase()
     if ADMIN_API_KEY and request.headers.get("x-admin-key") != ADMIN_API_KEY:
         raise HTTPException(status_code=401, detail="unauthorized")
-    items = await db_call(db.newsletter.find().sort("created_at", -1).to_list(1000))
-    return [Newsletter(**it) for it in items]
+    
+    try:
+        result = supabase.table('newsletter').select('*').order('created_at', desc=True).limit(1000).execute()
+        return [Newsletter(**item) for item in result.data]
+    except Exception as e:
+        logger.error(f"Error fetching newsletter subscriptions: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
-# --- Backend LLM proxy (optional) ---
+# Backend LLM proxy (AI Chat - unchanged)
 from fastapi.responses import StreamingResponse
 
 async def _iter_openrouter_stream(messages: List[dict]):
@@ -242,8 +288,8 @@ async def _iter_openrouter_stream(messages: List[dict]):
     headers = {
         "Content-Type": "application/json",
         "Accept": "text/event-stream",
-        "HTTP-Referer": "https://example.com",
-        "X-Title": "Site Chat",
+        "HTTP-Referer": "https://silviosuperandolimites.com.br",
+        "X-Title": "Superando Limites Chat",
     }
     for api_key in api_keys:
         try:
@@ -266,7 +312,8 @@ async def _iter_openrouter_stream(messages: List[dict]):
                             break
                         yield line + "\n"
                 return
-        except Exception:
+        except Exception as e:
+            logger.warning(f"OpenRouter attempt failed: {str(e)}")
             continue
 
 @api_router.post("/chat/complete")
@@ -286,6 +333,7 @@ async def chat_complete(req: ChatCompletionRequest):
 # Include the router in the main app
 app.include_router(api_router)
 
+# CORS configuration
 allowed = os.environ.get("ALLOWED_ORIGINS", "").strip()
 origins = [o.strip() for o in allowed.split(",") if o.strip()] or ["*"]
 app.add_middleware(
@@ -295,14 +343,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()

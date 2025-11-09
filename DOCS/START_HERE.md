@@ -21,13 +21,18 @@ echo "REACT_APP_ENV=development" >> .env
 ```bash
 cd backend
 cat > .env << EOF
-PORT=8000
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your_service_role_key_here
 ALLOWED_ORIGINS=http://localhost:3000
-MONGO_URL=mongodb://localhost:27017/localdb
-DB_NAME=localdb
 ADMIN_API_KEY=local-dev-key
+OPENROUTER_API_KEY=your_openrouter_key_here
 EOF
 ```
+
+> **IMPORTANT**: Get Supabase credentials from [supabase.com](https://supabase.com)
+> 1. Create free project
+> 2. Run SQL schema from `dev-utils/docs/SUPABASE_MIGRATION.md`
+> 3. Copy URL and Service Key from Settings > API
 
 > **Detailed guide:** [DOCS/ENVIRONMENT_VARIABLES.md](DOCS/ENVIRONMENT_VARIABLES.md)
 

@@ -80,28 +80,41 @@ Create file: `backend/.env`
 ### Required Variables
 
 ```env
-# Server Configuration
-PORT=8000
-ALLOWED_ORIGINS=http://localhost:3000,https://your-frontend-url.com
+# Supabase Database Configuration
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_SERVICE_KEY=your_service_role_key_here
 
-# Database Configuration
-MONGO_URL=mongodb://localhost:27017/yourdb
-DB_NAME=yourdb
+# ⚠️ WARNING: SUPABASE_SERVICE_KEY is SECRET!
+# This key has full database access - never expose it in frontend or commit to Git
+
+# CORS Configuration
+ALLOWED_ORIGINS=http://localhost:3000,https://your-frontend-url.com
 
 # Admin API Key (for protected endpoints)
 ADMIN_API_KEY=your-secure-admin-key-change-this
 ```
 
+### How to Get Supabase Credentials
+
+1. Go to [supabase.com](https://supabase.com) and create a free account
+2. Create a new project (choose free tier)
+3. Go to **Settings** > **API**
+4. Copy:
+   - **Project URL** → `SUPABASE_URL`
+   - **service_role key** → `SUPABASE_SERVICE_KEY` (⚠️ Keep secret!)
+
 ### Optional Variables
 
 ```env
-# N8N Webhook Integration
-N8N_WEBHOOK_LEAD=https://your-n8n-instance.com/webhook/leads
-N8N_WEBHOOK_ORDER=https://your-n8n-instance.com/webhook/orders
-N8N_WEBHOOK_NEWSLETTER=https://your-n8n-instance.com/webhook/newsletter
+# AI Chat (OpenRouter)
+OPENROUTER_MODEL=openai/gpt-3.5-turbo
+OPENROUTER_API_KEY=sk-or-v1-xxxxx
 
-# Checkout Integration
-CHECKOUT_PUBLIC_URL=https://your-checkout-url.com
+# Multiple API Keys (comma or semicolon separated)
+# OPENROUTER_API_KEYS=key1,key2,key3
+
+# Checkout Integration (Yampi)
+CHECKOUT_PUBLIC_URL=https://secure.yampi.com.br/checkout/your-store-id
 CHECKOUT_PROVIDER=yampi
 
 # LLM Configuration (OpenRouter)
@@ -178,17 +191,14 @@ NETLIFY_SITE_ID
 
 ```
 PORT (auto-provided by Railway)
-MONGO_URL=mongodb+srv://your-mongo-connection
-DB_NAME=your-database-name
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your_service_role_key
 ALLOWED_ORIGINS=https://your-frontend.com
 ADMIN_API_KEY=your-secure-key
-N8N_WEBHOOK_LEAD=https://...
-N8N_WEBHOOK_ORDER=https://...
-N8N_WEBHOOK_NEWSLETTER=https://...
-CHECKOUT_PUBLIC_URL=https://...
+CHECKOUT_PUBLIC_URL=https://secure.yampi.com.br/checkout/your-store
 CHECKOUT_PROVIDER=yampi
 OPENROUTER_API_KEY=sk-or-v1-xxxxx
-OPENROUTER_MODEL=openai/gpt-4o-mini
+OPENROUTER_MODEL=openai/gpt-3.5-turbo
 ```
 
 ### Render Setup
@@ -491,16 +501,13 @@ REACT_APP_GA_ID=G-XXXXXXXXXX
 ```env
 PORT=8000
 ALLOWED_ORIGINS=https://your-frontend.com,https://www.your-frontend.com
-MONGO_URL=mongodb+srv://user:pass@cluster.mongodb.net/proddb?retryWrites=true&w=majority
-DB_NAME=proddb
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_SERVICE_KEY=your_service_role_key_here
 ADMIN_API_KEY=very-secure-random-key-here-64-chars-min
-N8N_WEBHOOK_LEAD=https://n8n.example.com/webhook/leads
-N8N_WEBHOOK_ORDER=https://n8n.example.com/webhook/orders
-N8N_WEBHOOK_NEWSLETTER=https://n8n.example.com/webhook/newsletter
-CHECKOUT_PUBLIC_URL=https://checkout.example.com
+CHECKOUT_PUBLIC_URL=https://secure.yampi.com.br/checkout/your-store
 CHECKOUT_PROVIDER=yampi
 OPENROUTER_API_KEY=sk-or-v1-your-key-here
-OPENROUTER_MODEL=openai/gpt-4o-mini
+OPENROUTER_MODEL=openai/gpt-3.5-turbo
 ```
 
 ---

@@ -40,8 +40,8 @@ Landing page moderna e performática para o livro "Superando Limites", desenvolv
 
 ### Backend
 - **FastAPI** - API REST moderna e rápida
-- **MongoDB** - Banco de dados para leads e analytics
-- **N8N** - Automação de workflows (emails, notificações)
+- **Supabase (PostgreSQL)** - Banco de dados para leads e analytics
+- **OpenRouter** - API de IA para chat com suporte ao livro
 
 ### DevOps
 - **GitHub Actions** - CI/CD automatizado
@@ -75,7 +75,7 @@ O site foi otimizado para máxima performance:
 
 - Node.js 16+
 - Python 3.9+
-- MongoDB (local ou Atlas)
+- Conta Supabase (gratuita)
 
 ### Instalação
 
@@ -83,7 +83,19 @@ O site foi otimizado para máxima performance:
 # Clone o repositório
 git clone https://github.com/grilojr09br/Superando-Limites-Website.git
 cd Superando-Limites-Website
+```
 
+### Configuração do Banco de Dados (Supabase)
+
+1. Crie uma conta gratuita em [supabase.com](https://supabase.com)
+2. Crie um novo projeto
+3. No SQL Editor do Supabase, execute o schema em `dev-utils/docs/SUPABASE_MIGRATION.md`
+4. Copie as credenciais (URL e Service Key) de Settings > API
+5. Crie `backend/.env` com as variáveis (veja `dev-utils/docs/ENV_SETUP.md`)
+
+### Iniciando o Projeto
+
+```bash
 # Use o Dev Manager (Windows)
 deploy-manager.bat
 # Selecione [4] Install All Dependencies

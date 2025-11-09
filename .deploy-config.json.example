@@ -23,7 +23,8 @@
   "backend": {
     "directory": "backend",
     "dev_port": 8000,
-    "use_venv": true
+    "use_venv": true,
+    "database": "supabase"
   }
 }
 
