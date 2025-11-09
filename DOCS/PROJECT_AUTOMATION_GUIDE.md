@@ -257,7 +257,7 @@ gh repo create my-awesome-project --public --source=. --remote=origin
 
 ```bash
 # Add remote
-git remote add origin https://github.com/YOUR_USERNAME/my-awesome-project.git
+git remote add origin https://github.com/grilojr09br/Superando-Limites-Website.git
 
 # Verify
 git remote -v
@@ -1676,13 +1676,13 @@ git push origin main
 
 **Step 2: Watch GitHub Actions**
 
-1. Go to: `https://github.com/YOUR_USERNAME/my-awesome-project/actions`
+1. Go to: `https://github.com/grilojr09br/Superando-Limites-Website/actions`
 2. You should see workflows running
 3. Wait for completion (~2-5 minutes)
 
 **Step 3: Check Deployments**
 
-1. Go to: `https://github.com/YOUR_USERNAME/my-awesome-project/deployments`
+1. Go to: `https://github.com/grilojr09br/Superando-Limites-Website/deployments`
 2. You should see deployment records
 3. Click on a deployment to see details
 
@@ -1982,13 +1982,13 @@ npx supabase db push
 
 ```
 GitHub Repository:
-https://github.com/YOUR_USERNAME/my-awesome-project
+https://github.com/grilojr09br/Superando-Limites-Website
 
 GitHub Actions:
-https://github.com/YOUR_USERNAME/my-awesome-project/actions
+https://github.com/grilojr09br/Superando-Limites-Website/actions
 
 GitHub Deployments:
-https://github.com/YOUR_USERNAME/my-awesome-project/deployments
+https://github.com/grilojr09br/Superando-Limites-Website/deployments
 
 Railway Dashboard:
 https://railway.app/dashboard
@@ -2103,7 +2103,7 @@ FRONTEND_URL=https://your-frontend.com
 
 ### Community
 
-- **GitHub Discussions:** https://github.com/YOUR_USERNAME/my-awesome-project/discussions
+- **GitHub Discussions:** https://github.com/grilojr09br/Superando-Limites-Website/discussions
 - **Discord:** Join relevant Discord servers
 - **Stack Overflow:** Tag your questions appropriately
 

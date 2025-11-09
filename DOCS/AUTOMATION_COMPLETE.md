@@ -158,8 +158,8 @@ Every push to `main` triggers:
 ### 2. Deployment Tracking
 
 All deployments are tracked in GitHub:
-- View history: `https://github.com/YOUR_USERNAME/YOUR_REPO/deployments`
-- See status: `https://github.com/YOUR_USERNAME/YOUR_REPO/actions`
+- View history: `https://github.com/grilojr09br/Superando-Limites-Website/deployments`
+- See status: `https://github.com/grilojr09br/Superando-Limites-Website/actions`
 
 ### 3. Interactive Dev Manager
 
@@ -288,7 +288,7 @@ Features:
    git add .
    git commit -m "test: Verify automation"
    git push origin main
-   # Check: github.com/YOUR_USERNAME/YOUR_REPO/actions
+   # Check: github.com/grilojr09br/Superando-Limites-Website/actions
    ```
 
 ### This Week

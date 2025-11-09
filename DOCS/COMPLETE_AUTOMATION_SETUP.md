@@ -157,8 +157,8 @@ Three automated workflows for CI/CD:
 
 ```bash
 # Clone repository
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-cd YOUR_REPO
+git clone https://github.com/grilojr09br/Superando-Limites-Website.git
+cd Superando-Limites-Website
 
 # Install frontend dependencies
 cd frontend
@@ -249,14 +249,14 @@ npm start
    - Create deployment records
 
 4. **You can track everything:**
-   - Actions tab: https://github.com/YOUR_USERNAME/YOUR_REPO/actions
-   - Deployments tab: https://github.com/YOUR_USERNAME/YOUR_REPO/deployments
+   - Actions tab: https://github.com/grilojr09br/Superando-Limites-Website/actions
+   - Deployments tab: https://github.com/grilojr09br/Superando-Limites-Website/deployments
 
 ### Viewing Workflow Status
 
 ```bash
 # Go to your repository
-https://github.com/YOUR_USERNAME/YOUR_REPO/actions
+https://github.com/grilojr09br/Superando-Limites-Website/actions
 
 # You'll see:
 # ✅ Frontend Deployment - SUCCESS (if frontend changed)
@@ -568,10 +568,10 @@ deploy-manager.bat
 
 ```
 GitHub Actions:
-https://github.com/YOUR_USERNAME/YOUR_REPO/actions
+https://github.com/grilojr09br/Superando-Limites-Website/actions
 
 GitHub Deployments:
-https://github.com/YOUR_USERNAME/YOUR_REPO/deployments
+https://github.com/grilojr09br/Superando-Limites-Website/deployments
 
 Railway Dashboard:
 https://railway.app/dashboard
@@ -762,8 +762,8 @@ Local Development:
   API Docs:   http://localhost:8000/docs
 
 GitHub:
-  Actions:    https://github.com/YOUR_USERNAME/YOUR_REPO/actions
-  Deployments: https://github.com/YOUR_USERNAME/YOUR_REPO/deployments
+  Actions:    https://github.com/grilojr09br/Superando-Limites-Website/actions
+  Deployments: https://github.com/grilojr09br/Superando-Limites-Website/deployments
 
 Production:
   Frontend:   https://your-frontend-url.com

@@ -1,480 +1,302 @@
-# 🚀 Automated Full-Stack Website Platform
+# 📖 Superando Limites - Website Oficial
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-19.0.0-blue.svg)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110.1-green.svg)](https://fastapi.tiangolo.com/)
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4.1-38bdf8.svg)](https://tailwindcss.com/)
+[![Live](https://img.shields.io/badge/Live-silviosuperandolimites.com.br-success.svg)](https://silviosuperandolimites.com.br/)
 
-> A high-performance, fully automated full-stack web platform with CI/CD pipelines, advanced performance optimizations, and seamless integrations.
+> Website oficial do livro "Superando Limites" de Silvio - Uma plataforma completa para marketing e vendas do livro.
 
----
-
-## ✨ Features
-
-### 🎯 Core Features
-- ⚡ **Ultra-Fast Loading** - Optimized LCP < 2.5s on mobile
-- 🎨 **Modern UI/UX** - Built with React 19 and Tailwind CSS
-- 🔐 **Secure Backend** - FastAPI with JWT authentication
-- 📱 **Fully Responsive** - Mobile-first design approach
-- 🖼️ **Image Optimization** - WebP + AVIF with lazy loading
-- 🚀 **Progressive Web App** - Offline support and caching
-
-### 🤖 Automation & DevOps
-- ✅ **GitHub Actions CI/CD** - Automated testing and deployment
-- 🔄 **N8N Workflows** - Business process automation
-- 📊 **Performance Monitoring** - Real-time metrics tracking
-- 🛠️ **Interactive Dev Manager** - One-command development setup
-- 📦 **Automated Builds** - Production-ready builds on push
-
-### 🔌 Integrations
-- 💳 **Yampi E-commerce** - Seamless checkout integration
-- 💬 **AI Chat Widget** - Customer support automation
-- 📧 **Email Automation** - N8N-powered workflows
-- 🗄️ **MongoDB Atlas** - Cloud database integration
+🌐 **Website:** [silviosuperandolimites.com.br](https://silviosuperandolimites.com.br/)
 
 ---
 
-## 🏗️ Architecture
+## 📚 Sobre o Projeto
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      GitHub Repository                       │
-│  ┌────────────────────┐        ┌─────────────────────────┐  │
-│  │     Frontend       │        │       Backend           │  │
-│  │   (React 19)       │◄──────►│   (FastAPI/Python)      │  │
-│  │   Tailwind CSS     │  HTTP  │   MongoDB               │  │
-│  └────────────────────┘        └─────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-           │                              │
-           │                              │
-      ┌────▼────┐                    ┌────▼────┐
-      │ Netlify │                    │ Railway │
-      │ /Vercel │                    │ /Render │
-      └─────────┘                    └─────────┘
-```
+Landing page moderna e performática para o livro "Superando Limites", desenvolvida com as melhores práticas de web development. O projeto está sendo expandido para se tornar uma plataforma completa de marketing para o livro.
 
----
+### 🎯 Funcionalidades Atuais
 
-## 🚀 Quick Start
+- 📖 **Landing Page do Livro** - Design moderno e responsivo
+- 💳 **Integração Yampi** - Checkout direto para compra do livro
+- 💬 **Chat com IA** - Suporte automatizado ao cliente
+- 📧 **Captura de Leads** - Formulário integrado com N8N
+- 🖼️ **Imagens Otimizadas** - WebP + AVIF para carregamento ultra-rápido
+- 📱 **Mobile-First** - Experiência perfeita em dispositivos móveis
 
-### Prerequisites
+### 🚀 Próximas Funcionalidades
 
-- **Node.js** 16+ and npm/yarn
-- **Python** 3.9+
-- **MongoDB** (local or Atlas)
-- **Git**
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-   cd YOUR_REPO
-   ```
-
-2. **Set up environment variables**
-   
-   **Frontend** (`frontend/.env`):
-   ```bash
-   REACT_APP_API_URL=http://localhost:8000
-   REACT_APP_ENV=development
-   ```
-
-   **Backend** (`backend/.env`):
-   ```bash
-   PORT=8000
-   ALLOWED_ORIGINS=http://localhost:3000
-   MONGO_URL=mongodb://localhost:27017/localdb
-   DB_NAME=localdb
-   ADMIN_API_KEY=your-secure-api-key
-   ```
-
-3. **Install dependencies**
-   
-   **Frontend:**
-   ```bash
-   cd frontend
-   npm install
-   ```
-
-   **Backend:**
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   ```
-
-4. **Start development servers**
-
-   **Option 1: Interactive Dev Manager (Windows)**
-   ```bash
-   deploy-manager.bat
-   # Select option [3] - Start Both Servers
-   ```
-
-   **Option 2: Manual**
-   ```bash
-   # Terminal 1: Backend
-   cd backend
-   uvicorn server:app --reload
-
-   # Terminal 2: Frontend  
-   cd frontend
-   npm start
-   ```
-
-5. **Access the application**
-   - 🎨 Frontend: http://localhost:3000
-   - 🔧 Backend: http://localhost:8000
-   - 📚 API Docs: http://localhost:8000/docs
+- [ ] Blog sobre os temas do livro
+- [ ] Área de membros
+- [ ] Recursos exclusivos para leitores
+- [ ] Newsletter automatizada
+- [ ] Depoimentos e reviews
+- [ ] Material complementar
 
 ---
 
-## 📚 Documentation
-
-### 📖 Main Guides
-
-| Document | Description | Time |
-|----------|-------------|------|
-| [**DOCS/START_HERE.md**](DOCS/START_HERE.md) | Complete quick start guide | 15 min |
-| [**DOCS/INDEX.md**](DOCS/INDEX.md) | 📚 **Complete documentation index** | - |
-| [**DOCS/ENVIRONMENT_VARIABLES.md**](DOCS/ENVIRONMENT_VARIABLES.md) | Environment setup guide | 10 min |
-| [**DOCS/COMPLETE_AUTOMATION_SETUP.md**](DOCS/COMPLETE_AUTOMATION_SETUP.md) | Full automation guide | 30 min |
-
-### 🎯 Quick Links
-
-- **Deployment**: [DOCS/HOSTINGER_DEPLOY.md](DOCS/HOSTINGER_DEPLOY.md)
-- **Performance**: [DOCS/PERFORMANCE_OPTIMIZATION.md](DOCS/PERFORMANCE_OPTIMIZATION.md)
-- **Testing**: [scripts/README_TESTS.md](scripts/README_TESTS.md)
-- **Integrations**: [DOCS/YAMPI_INTEGRATION.md](DOCS/YAMPI_INTEGRATION.md)
-
-👉 **[View Complete Documentation Index →](DOCS/INDEX.md)**
-
----
-
-## 🛠️ Tech Stack
+## 🛠️ Tecnologias
 
 ### Frontend
-- **Framework**: React 19.0.0
-- **Styling**: Tailwind CSS 3.4.1
-- **UI Components**: Radix UI, Lucide Icons
-- **State Management**: React Hooks
-- **Build Tool**: Create React App + CRACO
-- **Optimization**: Sharp, WebP/AVIF
+- **React 19.0** - Interface moderna e performática
+- **Tailwind CSS** - Design system e estilos
+- **Radix UI** - Componentes acessíveis
+- **Lazy Loading** - Carregamento otimizado de imagens
 
 ### Backend
-- **Framework**: FastAPI 0.110.1
-- **Server**: Uvicorn
-- **Database**: MongoDB + Motor (async)
-- **Authentication**: JWT, PassLib
-- **Validation**: Pydantic
-- **Testing**: Pytest
+- **FastAPI** - API REST moderna e rápida
+- **MongoDB** - Banco de dados para leads e analytics
+- **N8N** - Automação de workflows (emails, notificações)
 
-### DevOps & Automation
-- **CI/CD**: GitHub Actions
-- **Automation**: N8N Workflows
-- **Deployment**: 
-  - Frontend: Netlify/Vercel/Hostinger
-  - Backend: Railway/Render
-- **Monitoring**: Custom performance tracking
+### DevOps
+- **GitHub Actions** - CI/CD automatizado
+- **Railway** - Hospedagem do backend
+- **Hostinger** - Hospedagem do frontend
+- **Automated Testing** - Testes automatizados
 
 ---
 
-## 🎯 Performance
+## ⚡ Performance
 
-### Lighthouse Scores
+O site foi otimizado para máxima performance:
 
-| Metric | Desktop | Mobile |
-|--------|---------|--------|
+| Métrica | Desktop | Mobile |
+|---------|---------|--------|
 | Performance | 98+ | 95+ |
 | Accessibility | 100 | 100 |
 | Best Practices | 100 | 100 |
 | SEO | 100 | 100 |
 
-### Key Metrics
-
+**Métricas Principais:**
 - **LCP**: < 2.5s (mobile)
 - **FID**: < 100ms
 - **CLS**: < 0.1
-- **TTI**: < 3.8s
-
-### Optimizations
-
-- ✅ Critical CSS inlining
-- ✅ Image optimization (WebP + AVIF)
-- ✅ Code splitting & lazy loading
-- ✅ Service worker caching
-- ✅ Preconnect to required origins
-- ✅ Font optimization
 
 ---
 
-## 📦 Project Structure
+## 🚀 Quick Start
+
+### Pré-requisitos
+
+- Node.js 16+
+- Python 3.9+
+- MongoDB (local ou Atlas)
+
+### Instalação
+
+```bash
+# Clone o repositório
+git clone https://github.com/grilojr09br/Superando-Limites-Website.git
+cd Superando-Limites-Website
+
+# Use o Dev Manager (Windows)
+deploy-manager.bat
+# Selecione [4] Install All Dependencies
+# Selecione [3] Start Both Servers
+
+# Ou manualmente:
+# Frontend
+cd frontend
+npm install
+npm start
+
+# Backend
+cd backend
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+uvicorn server:app --reload
+```
+
+### Acesso
+
+- 🎨 Frontend: http://localhost:3000
+- ⚡ Backend: http://localhost:8000
+- 📚 API Docs: http://localhost:8000/docs
+
+---
+
+## 📦 Estrutura do Projeto
 
 ```
-.
-├── frontend/                 # React frontend application
+Superando-Limites-Website/
+├── frontend/               # React application
 │   ├── src/
-│   │   ├── components/      # Reusable components
-│   │   ├── pages/           # Page components
-│   │   ├── hooks/           # Custom React hooks
-│   │   └── utils/           # Utility functions
-│   ├── public/              # Static assets
-│   └── build/               # Production build
+│   │   ├── components/    # Componentes reutilizáveis
+│   │   ├── pages/         # Landing page
+│   │   └── hooks/         # Custom hooks
+│   └── public/            # Assets estáticos
 │
-├── backend/                  # FastAPI backend application
-│   ├── server.py            # Main FastAPI application
-│   ├── requirements.txt     # Python dependencies
-│   └── __pycache__/         # Python cache
+├── backend/               # FastAPI application
+│   ├── server.py         # API principal
+│   └── requirements.txt  # Dependências Python
 │
-├── scripts/                  # Automation scripts
-│   ├── deploy-frontend.ps1  # Frontend deployment
-│   ├── optimize-images.js   # Image optimization
-│   └── test_stability.py    # Stability tests
+├── scripts/              # Scripts de automação
+│   └── *.ps1            # Helper scripts PowerShell
 │
-├── DOCS/                     # 📚 Complete documentation
-│   ├── INDEX.md             # Documentation index
-│   ├── START_HERE.md        # Quick start guide
-│   └── ...                  # 50+ documentation files
+├── DOCS/                 # 📚 Documentação completa
+│   ├── START_HERE.md    # Guia de início rápido
+│   └── INDEX.md         # Índice de documentação
 │
-├── deploy-manager.bat        # Interactive dev manager
-├── railway.json             # Railway deployment config
-├── render.yaml              # Render deployment config
-├── Procfile                 # Heroku/Railway process file
-└── README.md                # This file
+└── deploy-manager.bat   # Dev Manager interativo
 ```
+
+---
+
+## 📚 Documentação
+
+### Guias Principais
+
+- **[Quick Start →](DOCS/START_HERE.md)** - Comece aqui!
+- **[Environment Setup →](DOCS/ENVIRONMENT_VARIABLES.md)** - Configuração de variáveis
+- **[Yampi Integration →](DOCS/YAMPI_INTEGRATION.md)** - Integração de checkout
+- **[Complete Index →](DOCS/INDEX.md)** - Toda a documentação
+
+### Para Desenvolvedores
+
+- **Dev Manager**: Execute `deploy-manager.bat` para menu interativo
+- **Scripts**: Veja `scripts/README_SCRIPTS.md`
+- **Contributing**: Veja [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
 
 ## 🚀 Deployment
 
-### Frontend Deployment
-
-#### Netlify/Vercel (Recommended)
-
-1. Connect your GitHub repository
-2. Configure build settings:
-   - **Build command**: `npm run build`
-   - **Publish directory**: `build`
-   - **Base directory**: `frontend`
-3. Add environment variables
-4. Deploy!
-
-#### Hostinger (Manual/Automated)
+### Frontend (Hostinger)
 
 ```bash
-# Use the automated deployment script
-cd scripts
-.\deploy-frontend.ps1
-```
+# Usando o deploy manager
+deploy-manager.bat
+# Selecione [8] Deploy Frontend
 
-### Backend Deployment
-
-#### Railway (Recommended)
-
-1. Connect your GitHub repository
-2. Add `backend/` as the root directory
-3. Railway auto-detects Python and uses `Procfile`
-4. Add environment variables
-5. Deploy!
-
-#### Render
-
-1. Connect your GitHub repository
-2. Create a new Web Service
-3. Use `backend/` as the root directory
-4. Set build command: `pip install -r requirements.txt`
-5. Set start command: `uvicorn server:app --host 0.0.0.0 --port $PORT`
-
----
-
-## 🧪 Testing
-
-### Run Tests
-
-**Frontend**:
-```bash
+# Ou manualmente
 cd frontend
-npm test
+npm run build
+# Upload do conteúdo de build/ para servidor
 ```
 
-**Backend**:
+### Backend (Railway)
+
 ```bash
-cd backend
-pytest
+# Push para GitHub (auto-deploy)
+git push origin main
+
+# Railway detecta e faz deploy automaticamente
 ```
 
-**Stability Tests**:
-```bash
-python scripts/test_stability.py
-```
+**Guias detalhados:** [DOCS/HOSTINGER_DEPLOY.md](DOCS/HOSTINGER_DEPLOY.md)
 
 ---
 
-## 🔧 Development Tools
+## 🔌 Integrações
 
-### Dev Manager (Windows)
+### Yampi (E-commerce)
+- Checkout direto integrado
+- Link de pagamento customizado
+- Webhook para notificações
 
-Interactive command-line tool for common development tasks:
+### N8N (Automação)
+- Captura de leads por email
+- Notificações automáticas
+- Workflows personalizados
 
-```bash
+### OpenRouter (AI Chat)
+- Chat de suporte com IA
+- Respostas automáticas
+- Múltiplas chaves para balanceamento
+
+---
+
+## 🛠️ Dev Tools
+
+### Deploy Manager
+
+Menu interativo para todas as tarefas de desenvolvimento:
+
+```batch
 deploy-manager.bat
 ```
 
-**Features**:
-- Start/stop servers
-- Build for production
-- Run tests
-- Deploy to production
-- Check environment variables
-- Clean build artifacts
-- Optimize images
+**Principais comandos:**
+- `[3]` Start Both Servers
+- `[7]` Build & Test Everything
+- `[11]` Check Environment Variables
+- `[15]` Check System Requirements
 
 ---
 
-## 📊 Monitoring & Analytics
+## 🔒 Segurança
 
-- **Performance**: Lighthouse CI integration
-- **Errors**: Automatic error logging
-- **Analytics**: Custom event tracking
-- **Health**: Server health checks
+- JWT authentication no backend
+- CORS configurado corretamente
+- Variáveis sensíveis em `.env` (não versionado)
+- Rate limiting implementado
+- Input validation com Pydantic
 
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-### Development Workflow
-
-1. **Fork the repository**
-2. **Create a feature branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. **Make your changes**
-4. **Test thoroughly**
-   ```bash
-   npm test  # Frontend
-   pytest    # Backend
-   ```
-5. **Commit your changes**
-   ```bash
-   git commit -m "feat: Add amazing feature"
-   ```
-6. **Push to your fork**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-7. **Open a Pull Request**
-
-### Commit Convention
-
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-- `feat:` New feature
-- `fix:` Bug fix
-- `docs:` Documentation changes
-- `style:` Code style changes
-- `refactor:` Code refactoring
-- `test:` Test additions/changes
-- `chore:` Maintenance tasks
+**Política de Segurança:** [SECURITY.md](SECURITY.md)
 
 ---
 
-## 🔒 Security
+## 📊 Analytics & Monitoring
 
-- **Authentication**: JWT-based authentication
-- **CORS**: Configured with allowed origins
-- **Environment Variables**: Sensitive data in `.env` files
-- **Input Validation**: Pydantic models
-- **SQL Injection**: MongoDB parameterized queries
-- **HTTPS**: Enforced in production
-
-**Found a security issue?** Please email security@yourdomain.com instead of creating a public issue.
+- Performance tracking integrado
+- Error logging automático
+- N8N webhooks para notificações
+- GitHub Actions para CI/CD
 
 ---
 
-## 📄 License
+## 🤝 Contribuindo
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Contribuições são bem-vindas! Veja o guia completo em [CONTRIBUTING.md](CONTRIBUTING.md).
 
----
+### Fluxo de Desenvolvimento
 
-## 🙏 Acknowledgments
-
-- [React](https://reactjs.org/) - Frontend framework
-- [FastAPI](https://fastapi.tiangolo.com/) - Backend framework
-- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
-- [MongoDB](https://www.mongodb.com/) - Database
-- [N8N](https://n8n.io/) - Workflow automation
+1. Fork o repositório
+2. Crie uma branch: `git checkout -b feature/nova-funcionalidade`
+3. Commit suas mudanças: `git commit -m "feat: adiciona nova funcionalidade"`
+4. Push para a branch: `git push origin feature/nova-funcionalidade`
+5. Abra um Pull Request
 
 ---
 
-## 📞 Support
+## 📄 Licença
 
-- **Documentation**: [DOCS/INDEX.md](DOCS/INDEX.md)
-- **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/YOUR_REPO/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/YOUR_REPO/discussions)
+Este projeto está sob a licença MIT - veja [LICENSE](LICENSE) para detalhes.
 
 ---
 
-## 📈 Roadmap
+## 👤 Autor
 
-- [ ] GraphQL API implementation
-- [ ] WebSocket real-time features
-- [ ] Advanced analytics dashboard
-- [ ] Multi-language support (i18n)
-- [ ] Mobile app (React Native)
-- [ ] Advanced caching strategies
-- [ ] Microservices architecture
+**Davie Manuel Neymar** ([@grilojr09br](https://github.com/grilojr09br))
+
+**Projeto:** Superando Limites - Livro de Silvio
 
 ---
 
-## 📸 Screenshots
+## 🔗 Links
 
-### Desktop View
-![Desktop View](frontend/public/images/desktop-preview.webp)
-
-### Mobile View
-![Mobile View](frontend/public/images/mobile-preview.webp)
+- **Website:** https://silviosuperandolimites.com.br/
+- **Repositório:** https://github.com/grilojr09br/Superando-Limites-Website
+- **Issues:** https://github.com/grilojr09br/Superando-Limites-Website/issues
 
 ---
 
-## ⚡ Quick Commands
+## 📞 Suporte
 
-```bash
-# Development
-npm start                    # Start frontend
-uvicorn server:app --reload  # Start backend
-
-# Production
-npm run build               # Build frontend
-npm run build:full          # Build with image optimization
-
-# Testing
-npm test                    # Frontend tests
-pytest                      # Backend tests
-
-# Deployment
-git push origin main        # Triggers CI/CD
-deploy-manager.bat          # Interactive deployment
-
-# Utilities
-npm run optimize:images     # Optimize all images
-python scripts/check_secrets.py  # Check for exposed secrets
-```
+- 📧 **Email:** daviemanuelneymar@gmail.com
+- 💬 **Discussions:** [GitHub Discussions](https://github.com/grilojr09br/Superando-Limites-Website/discussions)
 
 ---
 
-**Built with ❤️ using React, FastAPI, and modern web technologies**
-
-**⭐ Star this repo if you find it useful!**
+**⭐ Se este projeto te ajudou, considere dar uma estrela!**
 
 ---
 
 <div align="center">
 
-[**Documentation**](DOCS/INDEX.md) • [**Quick Start**](DOCS/START_HERE.md) • [**Contributing**](CONTRIBUTING.md) • [**License**](LICENSE)
+**Desenvolvido com ❤️ para o livro "Superando Limites"**
+
+[Website](https://silviosuperandolimites.com.br/) • [Documentation](DOCS/INDEX.md) • [Contributing](CONTRIBUTING.md)
 
 </div>

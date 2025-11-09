@@ -135,6 +135,7 @@ test-results/
 *.lcov
 junit.xml
 .jest/
+tests/
 
 # ===========================
 # Logs

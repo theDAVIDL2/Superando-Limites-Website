@@ -523,10 +523,10 @@ git push origin main
 ### Check Status
 ```bash
 # GitHub Actions
-https://github.com/YOUR_USERNAME/YOUR_REPO/actions
+https://github.com/grilojr09br/Superando-Limites-Website/actions
 
 # GitHub Deployments
-https://github.com/YOUR_USERNAME/YOUR_REPO/deployments
+https://github.com/grilojr09br/Superando-Limites-Website/deployments
 
 # Railway
 https://railway.app/dashboard

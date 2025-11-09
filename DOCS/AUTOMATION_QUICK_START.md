@@ -182,7 +182,7 @@ git push origin main
 # Watch the magic happen:
 # 1. GitHub Actions builds your code
 # 2. Railway deploys backend automatically
-# 3. Check: github.com/YOUR_USERNAME/my-project/actions
+# 3. Check: github.com/grilojr09br/Superando-Limites-Website/actions
 ```
 
 ---

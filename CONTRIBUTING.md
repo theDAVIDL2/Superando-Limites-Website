@@ -25,7 +25,7 @@ The following is a set of guidelines for contributing. These are mostly guidelin
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by our Code of Conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to [INSERT EMAIL].
+This project and everyone participating in it is governed by our Code of Conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to daviemanuelneymar@gmail.com.
 
 **In short:**
 - Be respectful and inclusive
@@ -123,8 +123,8 @@ Add any other context or screenshots about the feature request.
 
 1. **Fork and clone the repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-   cd YOUR_REPO
+   git clone https://github.com/grilojr09br/Superando-Limites-Website.git
+   cd Superando-Limites-Website
    ```
 
 2. **Set up the frontend:**

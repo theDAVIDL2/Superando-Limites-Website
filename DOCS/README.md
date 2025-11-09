@@ -63,7 +63,7 @@ Based on: [GitHub Documentation](https://docs.github.com/en/copilot/how-tos/use-
 
 1. **Go to your repository:**
    ```
-   https://github.com/YOUR_USERNAME/YOUR_REPO
+   https://github.com/grilojr09br/Superando-Limites-Website
    ```
 
 2. **Navigate to Settings:**
@@ -140,7 +140,7 @@ curl -X POST \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer YOUR_GITHUB_TOKEN" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/rulesets \
+  https://api.github.com/repos/grilojr09br/Superando-Limites-Website/rulesets \
   -d @copilot-code-review-ruleset.json
 ```
 

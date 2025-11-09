@@ -143,7 +143,7 @@ START_HERE.md                        ← This file
    git commit -m "chore: Add automation setup"
    git push origin main
    ```
-   - View workflows: https://github.com/YOUR_USERNAME/YOUR_REPO/actions
+   - View workflows: https://github.com/grilojr09br/Superando-Limites-Website/actions
 
 ### This Week
 
@@ -248,7 +248,7 @@ Run `deploy-manager.bat` to access:
 - Check if ports 3000/8000 are free
 
 **Issue: GitHub Actions failing**
-- Check workflow logs: github.com/YOUR_USERNAME/YOUR_REPO/actions
+- Check workflow logs: github.com/grilojr09br/Superando-Limites-Website/actions
 - Verify `package-lock.json` is committed
 - Check GitHub secrets are set
 
@@ -313,7 +313,7 @@ You have everything you need:
 
 2. **Check Actions after every push:**
    ```
-   https://github.com/YOUR_USERNAME/YOUR_REPO/actions
+   https://github.com/grilojr09br/Superando-Limites-Website/actions
    ```
 
 3. **Test locally before pushing:**
