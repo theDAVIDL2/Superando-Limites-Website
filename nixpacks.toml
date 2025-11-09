@@ -1,0 +1,19 @@
+# Nixpacks configuration for Node.js backend
+# https://nixpacks.com/docs/configuration/file
+
+[phases.setup]
+# Install Node.js 18 and npm
+nixPkgs = ["nodejs-18_x"]
+
+[phases.install]
+# Install dependencies
+cmds = ["cd backend && npm install"]
+
+[phases.build]
+# No build needed
+cmds = ["echo 'Build complete'"]
+
+[start]
+# Start the server
+cmd = "cd backend && npm start"
+
