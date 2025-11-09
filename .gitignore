@@ -235,9 +235,17 @@ out/
 *release*.zip
 Websitebackup*.zip
 
-# Local development utilities
+# Local development utilities and personal tools
 dev-utils/
+
+# User-specific configuration (never commit)
+.deploy-config.json
+.hostinger-config.json
 scripts/deploy-config.local.json
+
+# Hostinger deployment scripts (contains credentials)
+deploy-hostinger.bat
+deploy-hostinger.txt
 
 # MongoDB data (if running locally)
 data/db/

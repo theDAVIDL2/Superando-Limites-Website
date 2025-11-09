@@ -1,0 +1,29 @@
+{
+  "project_name": "My Website",
+  "repository": {
+    "url": "https://github.com/username/repo-name",
+    "branch": "main"
+  },
+  "deployment": {
+    "method": "git",
+    "live_url": "https://your-website.com"
+  },
+  "ssh": {
+    "enabled": false,
+    "user": "your_ssh_user",
+    "host": "your_server_ip",
+    "path": "/var/www/html",
+    "key_path": ""
+  },
+  "frontend": {
+    "directory": "frontend",
+    "build_command": "npm run build",
+    "dev_port": 3000
+  },
+  "backend": {
+    "directory": "backend",
+    "dev_port": 8000,
+    "use_venv": true
+  }
+}
+

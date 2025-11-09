@@ -131,14 +131,16 @@ Superando-Limites-Website/
 │   ├── server.py         # API principal
 │   └── requirements.txt  # Dependências Python
 │
-├── scripts/              # Scripts de automação
-│   └── *.ps1            # Helper scripts PowerShell
+├── scripts/              # 🤖 Automation scripts
+│   ├── deployment-dashboard.ps1
+│   └── ...
 │
 ├── DOCS/                 # 📚 Documentação completa
 │   ├── START_HERE.md    # Guia de início rápido
 │   └── INDEX.md         # Índice de documentação
 │
-└── deploy-manager.bat   # Dev Manager interativo
+├── deploy-manager.bat    # 🛠️ Interactive dev manager
+└── .deploy-config.json.example  # Configuration template
 ```
 
 ---

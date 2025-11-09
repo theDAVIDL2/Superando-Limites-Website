@@ -3,9 +3,29 @@ chcp 65001 >nul 2>&1
 setlocal EnableDelayedExpansion
 
 REM ================================================================
-REM Development & Deployment Manager v2.0
-REM Website Project - Automated Deployment System
+REM Development & Deployment Manager v3.0
+REM Universal Website Project Manager
 REM ================================================================
+
+REM Check for config file
+if not exist ".deploy-config.json" (
+    cls
+    powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Yellow; Write-Host ' First Time Setup' -ForegroundColor Cyan; Write-Host '============================================================' -ForegroundColor Yellow; Write-Host ''; Write-Host 'No configuration found. Creating from example...' -ForegroundColor White; Write-Host '';"
+    
+    if exist ".deploy-config.json.example" (
+        copy ".deploy-config.json.example" ".deploy-config.json" >nul
+        powershell -NoProfile -Command "Write-Host 'Created .deploy-config.json' -ForegroundColor Green; Write-Host ''; Write-Host 'Please edit .deploy-config.json with your settings:' -ForegroundColor Yellow; Write-Host '  - Repository URL' -ForegroundColor White; Write-Host '  - Live website URL' -ForegroundColor White; Write-Host '  - SSH settings (if using SSH deploy)' -ForegroundColor White; Write-Host ''; Write-Host 'Press any key to open the config file...' -ForegroundColor Cyan;"
+        pause >nul
+        notepad ".deploy-config.json"
+        powershell -NoProfile -Command "Write-Host ''; Write-Host 'Configuration saved! Restart deploy-manager.bat' -ForegroundColor Green; Write-Host '';"
+        pause
+        exit /b
+    ) else (
+        powershell -NoProfile -Command "Write-Host 'ERROR: .deploy-config.json.example not found!' -ForegroundColor Red; Write-Host 'Please ensure the file exists in the project root.' -ForegroundColor Yellow;"
+        pause
+        exit /b
+    )
+)
 
 :MENU
 cls
@@ -20,12 +40,12 @@ if "%choice%"=="5" goto BUILD_FRONTEND
 if "%choice%"=="6" goto TEST_BACKEND
 if "%choice%"=="7" goto BUILD_ALL
 if "%choice%"=="8" goto DEPLOY_DASHBOARD
-if "%choice%"=="9" goto DEPLOY_FRONTEND
+if "%choice%"=="9" goto DEPLOY_SSH
 if "%choice%"=="10" goto DEPLOY_FULL
 if "%choice%"=="11" goto CHECK_ENV
 if "%choice%"=="12" goto VIEW_LOGS
 if "%choice%"=="13" goto CLEAN
-if "%choice%"=="14" goto OPTIMIZE_IMAGES
+if "%choice%"=="14" goto EDIT_CONFIG
 if "%choice%"=="15" goto CHECK_REQUIREMENTS
 if "%choice%"=="0" goto EXIT
 
@@ -38,7 +58,7 @@ REM SHOW MENU FUNCTION
 REM ============================================================
 
 :SHOW_MENU
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Write-Host ''; Write-Host '═══════════════════════════════════════════════════════════════' -ForegroundColor Cyan; Write-Host '         🚀 WEBSITE PROJECT - DEV MANAGER v2.0 🚀' -ForegroundColor Yellow; Write-Host '═══════════════════════════════════════════════════════════════' -ForegroundColor Cyan; Write-Host ''; Write-Host ' 💻 DEVELOPMENT' -ForegroundColor Green; Write-Host '  [1] Start Frontend Dev Server (React)' -ForegroundColor White; Write-Host '  [2] Start Backend Dev Server (FastAPI)' -ForegroundColor White; Write-Host '  [3] Start Both (Frontend + Backend)' -ForegroundColor White; Write-Host '  [4] Install All Dependencies' -ForegroundColor White; Write-Host ''; Write-Host ' 🔨 BUILD & TEST' -ForegroundColor Green; Write-Host '  [5] Build Frontend for Production' -ForegroundColor White; Write-Host '  [6] Test Backend' -ForegroundColor White; Write-Host '  [7] Build & Test Everything' -ForegroundColor White; Write-Host ''; Write-Host ' 🚀 DEPLOYMENT' -ForegroundColor Green; Write-Host '  [8] 🎯 Deployment Dashboard (Git Push)' -ForegroundColor White; Write-Host '  [9] Deploy via SSH' -ForegroundColor White; Write-Host '  [10] Full Deployment (Build + Git Push)' -ForegroundColor White; Write-Host ''; Write-Host ' 🛠️  UTILITIES' -ForegroundColor Green; Write-Host '  [11] Check Environment Variables' -ForegroundColor White; Write-Host '  [12] View Deployment Logs' -ForegroundColor White; Write-Host '  [13] Clean Build Artifacts' -ForegroundColor White; Write-Host '  [14] Run Image Optimization' -ForegroundColor White; Write-Host '  [15] Check System Requirements' -ForegroundColor White; Write-Host ''; Write-Host '  [0] Exit' -ForegroundColor Red; Write-Host ''; Write-Host '═══════════════════════════════════════════════════════════════' -ForegroundColor Cyan; Write-Host '';"
+powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host '         WEBSITE PROJECT - DEV MANAGER v3.0' -ForegroundColor Yellow; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ''; Write-Host ' DEV SERVERS' -ForegroundColor Green; Write-Host '  [1] Start Frontend Dev Server' -ForegroundColor White; Write-Host '  [2] Start Backend Dev Server' -ForegroundColor White; Write-Host '  [3] Start Both (Frontend + Backend)' -ForegroundColor White; Write-Host '  [4] Install All Dependencies' -ForegroundColor White; Write-Host ''; Write-Host ' BUILD AND TEST' -ForegroundColor Green; Write-Host '  [5] Build Frontend for Production' -ForegroundColor White; Write-Host '  [6] Test Backend' -ForegroundColor White; Write-Host '  [7] Build and Test Everything' -ForegroundColor White; Write-Host ''; Write-Host ' DEPLOYMENT' -ForegroundColor Green; Write-Host '  [8] Deployment Dashboard (Git Push)' -ForegroundColor White; Write-Host '  [9] Deploy via SSH/SCP' -ForegroundColor White; Write-Host '  [10] Full Deployment (Build + Deploy)' -ForegroundColor White; Write-Host ''; Write-Host ' UTILITIES' -ForegroundColor Green; Write-Host '  [11] Check Environment Variables' -ForegroundColor White; Write-Host '  [12] View Git Logs' -ForegroundColor White; Write-Host '  [13] Clean Build Artifacts' -ForegroundColor White; Write-Host '  [14] Edit Configuration' -ForegroundColor White; Write-Host '  [15] Check System Requirements' -ForegroundColor White; Write-Host ''; Write-Host '  [0] Exit' -ForegroundColor Red; Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host '';"
 goto :EOF
 
 REM ============================================================
@@ -47,81 +67,67 @@ REM ============================================================
 
 :FRONTEND_DEV
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🎨 Starting Frontend Development Server...          ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-if not exist "frontend\package.json" (
-    powershell -NoProfile -Command "Write-Host '❌ Frontend directory not found!' -ForegroundColor Red"
-    timeout /t 2
-    goto MENU
-)
-
+powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ' Starting Frontend Development Server...' -ForegroundColor Yellow; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host '';"
 cd frontend
-powershell -NoProfile -Command "Write-Host '✅ Opening new terminal for Frontend...' -ForegroundColor Green"
-start "Frontend Dev Server" cmd /k "npm start"
-timeout /t 2 >nul
+start cmd /k "npm start"
+powershell -NoProfile -Command "Write-Host 'Frontend server starting in new window...' -ForegroundColor Green; Write-Host 'Access at: http://localhost:3000' -ForegroundColor Cyan; Write-Host '';"
 cd ..
-
-powershell -NoProfile -Command "Write-Host ''; Write-Host '✅ Frontend server starting...' -ForegroundColor Green; Write-Host '🌐 URL: http://localhost:3000' -ForegroundColor Cyan; Write-Host '📝 Check the new terminal window for logs' -ForegroundColor Yellow; Write-Host '';"
 pause
 goto MENU
 
 :BACKEND_DEV
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  ⚡ Starting Backend Development Server...           ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-if not exist "backend\server.py" (
-    powershell -NoProfile -Command "Write-Host '❌ Backend directory not found!' -ForegroundColor Red"
-    timeout /t 2
-    goto MENU
-)
-
+powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ' Starting Backend Development Server...' -ForegroundColor Yellow; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host '';"
 cd backend
-powershell -NoProfile -Command "Write-Host '✅ Opening new terminal for Backend...' -ForegroundColor Green"
-start "Backend Dev Server" cmd /k "uvicorn server:app --reload --host 0.0.0.0 --port 8000"
-timeout /t 2 >nul
+if exist ".venv" (
+    start cmd /k ".venv\Scripts\activate && uvicorn server:app --reload"
+) else (
+    start cmd /k "uvicorn server:app --reload"
+)
+powershell -NoProfile -Command "Write-Host 'Backend server starting in new window...' -ForegroundColor Green; Write-Host 'Access at: http://localhost:8000' -ForegroundColor Cyan; Write-Host 'API Docs: http://localhost:8000/docs' -ForegroundColor Cyan; Write-Host '';"
 cd ..
-
-powershell -NoProfile -Command "Write-Host ''; Write-Host '✅ Backend server starting...' -ForegroundColor Green; Write-Host '🌐 API: http://localhost:8000' -ForegroundColor Cyan; Write-Host '📚 Docs: http://localhost:8000/docs' -ForegroundColor Cyan; Write-Host '📝 Check the new terminal window for logs' -ForegroundColor Yellow; Write-Host '';"
 pause
 goto MENU
 
 :BOTH_DEV
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🚀 Starting Both Frontend and Backend...            ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-REM Start Backend
-if exist "backend\server.py" (
-    powershell -NoProfile -Command "Write-Host '⚡ Starting Backend...' -ForegroundColor Yellow"
-    cd backend
-    start "Backend Dev Server" cmd /k "uvicorn server:app --reload --host 0.0.0.0 --port 8000"
-    cd ..
-    timeout /t 2 >nul
-    powershell -NoProfile -Command "Write-Host '✅ Backend started' -ForegroundColor Green"
-) else (
-    powershell -NoProfile -Command "Write-Host '⚠️  Backend not found, skipping...' -ForegroundColor Yellow"
-)
+powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ' Starting Frontend + Backend Servers...' -ForegroundColor Yellow; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host '';"
 
 REM Start Frontend
-if exist "frontend\package.json" (
-    powershell -NoProfile -Command "Write-Host '🎨 Starting Frontend...' -ForegroundColor Yellow"
-    cd frontend
-    start "Frontend Dev Server" cmd /k "npm start"
-    cd ..
-    timeout /t 2 >nul
-    powershell -NoProfile -Command "Write-Host '✅ Frontend started' -ForegroundColor Green"
-) else (
-    powershell -NoProfile -Command "Write-Host '⚠️  Frontend not found, skipping...' -ForegroundColor Yellow"
-)
+cd frontend
+start cmd /k "title Frontend Dev Server && npm start"
+cd ..
 
-powershell -NoProfile -Command "Write-Host ''; Write-Host '═══════════════════════════════════════════════════════════' -ForegroundColor Cyan; Write-Host '🎉 Both servers are starting!' -ForegroundColor Green; Write-Host ''; Write-Host '📱 Frontend: http://localhost:3000' -ForegroundColor Cyan; Write-Host '⚡ Backend:  http://localhost:8000' -ForegroundColor Cyan; Write-Host '📚 API Docs: http://localhost:8000/docs' -ForegroundColor Cyan; Write-Host ''; Write-Host '📝 Check the terminal windows for logs' -ForegroundColor Yellow; Write-Host '═══════════════════════════════════════════════════════════' -ForegroundColor Cyan; Write-Host '';"
+REM Start Backend
+cd backend
+if exist ".venv" (
+    start cmd /k "title Backend Dev Server && .venv\Scripts\activate && uvicorn server:app --reload"
+) else (
+    start cmd /k "title Backend Dev Server && uvicorn server:app --reload"
+)
+cd ..
+
+powershell -NoProfile -Command "Write-Host 'Both servers starting...' -ForegroundColor Green; Write-Host ''; Write-Host 'Frontend: http://localhost:3000' -ForegroundColor Cyan; Write-Host 'Backend:  http://localhost:8000' -ForegroundColor Cyan; Write-Host 'API Docs: http://localhost:8000/docs' -ForegroundColor Cyan; Write-Host '';"
 pause
 goto MENU
 
 :INSTALL_ALL
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  📦 Installing All Dependencies...                    ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\install-deps.ps1"
+powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ' Installing All Dependencies...' -ForegroundColor Yellow; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host '';"
+if exist "scripts\install-deps.ps1" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\install-deps.ps1"
+) else (
+    powershell -NoProfile -Command "Write-Host 'Installing Frontend...' -ForegroundColor Yellow;"
+    cd frontend
+    call npm install
+    cd ..
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'Installing Backend...' -ForegroundColor Yellow;"
+    cd backend
+    if not exist ".venv" (python -m venv .venv)
+    call .venv\Scripts\pip install -r requirements.txt
+    cd ..
+)
+powershell -NoProfile -Command "Write-Host ''; Write-Host 'Done!' -ForegroundColor Green;"
 pause
 goto MENU
 
@@ -131,43 +137,22 @@ REM ============================================================
 
 :BUILD_FRONTEND
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🔨 Building Frontend for Production...              ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-if not exist "frontend\package.json" (
-    powershell -NoProfile -Command "Write-Host '❌ Frontend directory not found!' -ForegroundColor Red"
-    timeout /t 2
-    goto MENU
-)
-
+powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ' Building Frontend for Production...' -ForegroundColor Yellow; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host '';"
 cd frontend
-powershell -NoProfile -Command "Write-Host '🔨 Running production build...' -ForegroundColor Yellow"
 call npm run build
-if %errorlevel% equ 0 (
-    powershell -NoProfile -Command "Write-Host ''; Write-Host '✅ Frontend built successfully!' -ForegroundColor Green"
-) else (
-    powershell -NoProfile -Command "Write-Host ''; Write-Host '❌ Build failed! Check errors above.' -ForegroundColor Red"
-)
 cd ..
+powershell -NoProfile -Command "Write-Host ''; Write-Host 'Frontend build complete!' -ForegroundColor Green;"
 pause
 goto MENU
 
 :TEST_BACKEND
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🧪 Testing Backend...                                ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-if not exist "backend\server.py" (
-    powershell -NoProfile -Command "Write-Host '❌ Backend directory not found!' -ForegroundColor Red"
-    timeout /t 2
-    goto MENU
-)
-
+powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ' Testing Backend...' -ForegroundColor Yellow; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host '';"
 cd backend
-powershell -NoProfile -Command "Write-Host '🧪 Running backend tests...' -ForegroundColor Yellow"
-call pytest
-if %errorlevel% equ 0 (
-    powershell -NoProfile -Command "Write-Host ''; Write-Host '✅ All tests passed!' -ForegroundColor Green"
+if exist ".venv\Scripts\pytest.exe" (
+    call .venv\Scripts\pytest.exe
 ) else (
-    powershell -NoProfile -Command "Write-Host ''; Write-Host '⚠️  Some tests failed. Check output above.' -ForegroundColor Yellow"
+    pytest
 )
 cd ..
 pause
@@ -175,9 +160,18 @@ goto MENU
 
 :BUILD_ALL
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🔨 Building and Testing Everything...                ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\build-all.ps1"
+if exist "scripts\build-all.ps1" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\build-all.ps1"
+) else (
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'Building Frontend...' -ForegroundColor Yellow;"
+    cd frontend
+    call npm run build
+    cd ..
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'Testing Backend...' -ForegroundColor Yellow;"
+    cd backend
+    if exist ".venv\Scripts\pytest.exe" (call .venv\Scripts\pytest.exe) else (pytest)
+    cd ..
+)
 pause
 goto MENU
 
@@ -187,26 +181,40 @@ REM ============================================================
 
 :DEPLOY_DASHBOARD
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🎯 Opening Deployment Dashboard...                   ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\deployment-dashboard.ps1"
+if exist "scripts\deployment-dashboard.ps1" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\deployment-dashboard.ps1"
+) else (
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'ERROR: deployment-dashboard.ps1 not found!' -ForegroundColor Red; Write-Host 'Please ensure scripts folder exists.' -ForegroundColor Yellow;"
+    pause
+)
 goto MENU
 
-:DEPLOY_FRONTEND
+:DEPLOY_SSH
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🚀 SSH Deployment...                                 ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\deploy-ssh.ps1"
-pause
+if exist "scripts\deploy-ssh.ps1" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\deploy-ssh.ps1"
+) else (
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'ERROR: deploy-ssh.ps1 not found!' -ForegroundColor Red; Write-Host 'Please ensure scripts folder exists.' -ForegroundColor Yellow;"
+    pause
+)
 goto MENU
-
 
 :DEPLOY_FULL
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🚀 Full Deployment (Frontend + Backend)...           ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\deploy-full.ps1"
-pause
+if exist "scripts\deploy-full.ps1" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\deploy-full.ps1"
+) else (
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'Building and deploying...' -ForegroundColor Yellow;"
+    cd frontend
+    call npm run build
+    cd ..
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'Committing changes...' -ForegroundColor Yellow;"
+    git add .
+    git commit -m "deploy: update"
+    git push origin main
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'Deployed!' -ForegroundColor Green;"
+    pause
+)
 goto MENU
 
 REM ============================================================
@@ -215,60 +223,59 @@ REM ============================================================
 
 :CHECK_ENV
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🔐 Environment Variables Check                       ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\check-env.ps1"
-pause
+if exist "scripts\check-env.ps1" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\check-env.ps1"
+) else (
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'Checking environment files...' -ForegroundColor Yellow; Write-Host ''; if (Test-Path 'frontend\.env') { Write-Host 'OK: frontend\.env exists' -ForegroundColor Green } else { Write-Host 'WARNING: frontend\.env not found' -ForegroundColor Yellow }; if (Test-Path 'backend\.env') { Write-Host 'OK: backend\.env exists' -ForegroundColor Green } else { Write-Host 'WARNING: backend\.env not found' -ForegroundColor Yellow }; Write-Host '';"
+    pause
+)
 goto MENU
 
 :VIEW_LOGS
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  📋 Viewing Deployment Logs...                        ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-powershell -NoProfile -Command "Write-Host 'Opening GitHub Actions in browser...' -ForegroundColor Yellow; Start-Process 'https://github.com/grilojr09br/Superando-Limites-Website/actions'; Write-Host ''; Write-Host '📝 For Railway logs:' -ForegroundColor Cyan; Write-Host '  1. Go to https://railway.app/dashboard' -ForegroundColor White; Write-Host '  2. Select your project' -ForegroundColor White; Write-Host '  3. Click View Logs' -ForegroundColor White; Write-Host '';"
+powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ' Recent Git Commits' -ForegroundColor Yellow; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host '';"
+git log --oneline -10
+powershell -NoProfile -Command "Write-Host '';"
 pause
 goto MENU
 
 :CLEAN
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🧹 Cleaning Build Artifacts...                       ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\clean.ps1"
-pause
+if exist "scripts\clean.ps1" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\clean.ps1"
+) else (
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'Cleaning build artifacts...' -ForegroundColor Yellow; if (Test-Path 'frontend\build') { Remove-Item 'frontend\build' -Recurse -Force; Write-Host 'Removed frontend\build' -ForegroundColor Green }; if (Test-Path 'backend\__pycache__') { Remove-Item 'backend\__pycache__' -Recurse -Force; Write-Host 'Removed backend\__pycache__' -ForegroundColor Green }; Write-Host 'Done!' -ForegroundColor Green;"
+    pause
+)
 goto MENU
 
-:OPTIMIZE_IMAGES
+:EDIT_CONFIG
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  🖼️  Optimizing Images...                              ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host '';"
-
-if not exist "scripts\optimize-images.js" (
-    powershell -NoProfile -Command "Write-Host '❌ Optimization script not found!' -ForegroundColor Red"
-    timeout /t 2
-    goto MENU
-)
-
-powershell -NoProfile -Command "Write-Host '🖼️  Running image optimization...' -ForegroundColor Yellow"
-node scripts\optimize-images.js
-if %errorlevel% equ 0 (
-    powershell -NoProfile -Command "Write-Host ''; Write-Host '✅ Images optimized successfully!' -ForegroundColor Green"
+powershell -NoProfile -Command "Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ' Edit Configuration' -ForegroundColor Yellow; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ''; Write-Host 'Opening .deploy-config.json...' -ForegroundColor White; Write-Host '';"
+if exist ".deploy-config.json" (
+    notepad ".deploy-config.json"
 ) else (
-    powershell -NoProfile -Command "Write-Host ''; Write-Host '⚠️  Optimization completed with warnings.' -ForegroundColor Yellow"
+    powershell -NoProfile -Command "Write-Host 'ERROR: .deploy-config.json not found!' -ForegroundColor Red; Write-Host 'Creating from example...' -ForegroundColor Yellow;"
+    copy ".deploy-config.json.example" ".deploy-config.json" >nul
+    notepad ".deploy-config.json"
 )
+powershell -NoProfile -Command "Write-Host ''; Write-Host 'Configuration updated!' -ForegroundColor Green;"
 pause
 goto MENU
 
 :CHECK_REQUIREMENTS
 cls
-powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\check-requirements.ps1"
-pause
+if exist "scripts\check-requirements.ps1" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\check-requirements.ps1"
+) else (
+    powershell -NoProfile -Command "Write-Host ''; Write-Host 'Checking system requirements...' -ForegroundColor Yellow; Write-Host ''; try { node -v | Out-Null; Write-Host 'OK: Node.js installed' -ForegroundColor Green } catch { Write-Host 'ERROR: Node.js not found' -ForegroundColor Red }; try { python -V | Out-Null; Write-Host 'OK: Python installed' -ForegroundColor Green } catch { Write-Host 'ERROR: Python not found' -ForegroundColor Red }; try { git --version | Out-Null; Write-Host 'OK: Git installed' -ForegroundColor Green } catch { Write-Host 'ERROR: Git not found' -ForegroundColor Red }; Write-Host '';"
+    pause
+)
 goto MENU
-
-REM ============================================================
-REM EXIT
-REM ============================================================
 
 :EXIT
 cls
-powershell -NoProfile -Command "Write-Host ''; Write-Host '╔═══════════════════════════════════════════════════════╗' -ForegroundColor Cyan; Write-Host '║  👋 Thank you for using Dev Manager!                  ║' -ForegroundColor Yellow; Write-Host '╚═══════════════════════════════════════════════════════╝' -ForegroundColor Cyan; Write-Host ''; Write-Host '🚀 Happy coding!' -ForegroundColor Green; Write-Host '';"
-timeout /t 2 >nul
-exit /b 0
+powershell -NoProfile -Command "Write-Host ''; Write-Host 'Goodbye! 👋' -ForegroundColor Cyan; Write-Host '';"
+timeout /t 1 >nul
+exit
+

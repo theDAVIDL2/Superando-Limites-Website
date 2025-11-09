@@ -1,0 +1,23 @@
+{
+  "project_name": "Superando Limites Website",
+  "hostinger": {
+    "host": "your-server.hostinger.com",
+    "port": 22,
+    "user": "u123456789",
+    "remote_path": "/home/u123456789/public_html",
+    "exclude_folders": [
+      "l2",
+      ".well-known",
+      "cgi-bin"
+    ]
+  },
+  "frontend": {
+    "build_path": "frontend/build",
+    "index_file": "index.html"
+  },
+  "deployment": {
+    "backup_before_deploy": true,
+    "clear_cache_after": true
+  }
+}
+

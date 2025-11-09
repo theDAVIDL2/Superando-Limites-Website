@@ -1,5 +1,20 @@
 # Simple Deployment Dashboard
-# No complex logic, just basic git operations
+# Uses .deploy-config.json for user-specific settings
+
+# Load configuration
+$configPath = ".deploy-config.json"
+if (Test-Path $configPath) {
+    $config = Get-Content $configPath -Raw | ConvertFrom-Json
+    $repoUrl = $config.repository.url
+    $liveUrl = $config.deployment.live_url
+    $branch = $config.repository.branch
+} else {
+    Write-Host "WARNING: .deploy-config.json not found!" -ForegroundColor Yellow
+    Write-Host "Using default values. Please run deploy-manager.bat to configure." -ForegroundColor Yellow
+    $repoUrl = "https://github.com/username/repo"
+    $liveUrl = "https://your-website.com"
+    $branch = "main"
+}
 
 function Show-Menu {
     Clear-Host
@@ -12,7 +27,7 @@ function Show-Menu {
     Write-Host "  [2] Deploy with Custom Message" -ForegroundColor White
     Write-Host "  [3] Check Git Status" -ForegroundColor White
     Write-Host "  [4] View Recent Commits" -ForegroundColor White
-    Write-Host "  [5] Open GitHub Actions" -ForegroundColor White
+    Write-Host "  [5] Open GitHub Repository" -ForegroundColor White
     Write-Host "  [6] Open Live Website" -ForegroundColor White
     Write-Host ""
     Write-Host "  [0] Back to Main Menu" -ForegroundColor Red
@@ -50,8 +65,8 @@ while ($running) {
         git commit -m "$message"
         Write-Host ""
         
-        Write-Host "[3/4] Pushing to GitHub..." -ForegroundColor Yellow
-        git push origin main
+        Write-Host "[3/4] Pushing to $branch..." -ForegroundColor Yellow
+        git push origin $branch
         Write-Host ""
         
         if ($LASTEXITCODE -eq 0) {
@@ -59,8 +74,12 @@ while ($running) {
             Write-Host " SUCCESS! Deployment started" -ForegroundColor Green
             Write-Host "============================================================" -ForegroundColor Cyan
             Write-Host ""
-            Write-Host "Monitor at: https://github.com/grilojr09br/Superando-Limites-Website/actions" -ForegroundColor Cyan
-            Write-Host "Live site: https://silviosuperandolimites.com.br/" -ForegroundColor Cyan
+            if ($repoUrl -ne "https://github.com/username/repo") {
+                Write-Host "Monitor at: $repoUrl/actions" -ForegroundColor Cyan
+            }
+            if ($liveUrl -ne "https://your-website.com") {
+                Write-Host "Live site: $liveUrl" -ForegroundColor Cyan
+            }
             Write-Host ""
         } else {
             Write-Host "WARNING: Check messages above" -ForegroundColor Yellow
@@ -87,7 +106,7 @@ while ($running) {
             Write-Host ""
             
             Write-Host "[3/3] Pushing..." -ForegroundColor Yellow
-            git push origin main
+            git push origin $branch
             Write-Host ""
             
             if ($LASTEXITCODE -eq 0) {
@@ -116,17 +135,25 @@ while ($running) {
         Read-Host
     }
     elseif ($choice -eq "5") {
-        # GitHub Actions
+        # GitHub Repository
         Write-Host ""
-        Write-Host "Opening GitHub Actions..." -ForegroundColor Yellow
-        Start-Process "https://github.com/grilojr09br/Superando-Limites-Website/actions"
+        Write-Host "Opening repository..." -ForegroundColor Yellow
+        if ($repoUrl -ne "https://github.com/username/repo") {
+            Start-Process $repoUrl
+        } else {
+            Write-Host "ERROR: Repository URL not configured in .deploy-config.json" -ForegroundColor Red
+        }
         Start-Sleep -Seconds 1
     }
     elseif ($choice -eq "6") {
         # Live website
         Write-Host ""
         Write-Host "Opening website..." -ForegroundColor Yellow
-        Start-Process "https://silviosuperandolimites.com.br/"
+        if ($liveUrl -ne "https://your-website.com") {
+            Start-Process $liveUrl
+        } else {
+            Write-Host "ERROR: Live URL not configured in .deploy-config.json" -ForegroundColor Red
+        }
         Start-Sleep -Seconds 1
     }
     elseif ($choice -eq "0") {

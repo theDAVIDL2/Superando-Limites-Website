@@ -1,94 +1,139 @@
-# SSH Deployment Script
-# Deploy frontend build to server via SSH/SCP
+# Deploy via SSH/SCP Script
+# Uses .deploy-config.json for configuration
 
-Write-Host ""
-Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host " 🚀 SSH Deployment" -ForegroundColor Yellow
-Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host ""
-
-# Configuration (update these values)
-$SSH_HOST = "silviosuperandolimites.com.br"
-$SSH_USER = "your-username"
-$SSH_PORT = 22
-$REMOTE_PATH = "/home/your-username/public_html"
-$SSH_KEY_FINGERPRINT = "SHA256:aokCERS9ylt1D36boROla4ScEIqzbazJlL2ZABbgGHI"
-
-# Check if configured
-if ($SSH_USER -eq "your-username") {
-    Write-Host "⚠️  SSH deployment not configured!" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "📝 To configure, edit: scripts\deploy-ssh.ps1" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "Update these values:" -ForegroundColor White
-    Write-Host "  SSH_USER = your hosting username" -ForegroundColor Gray
-    Write-Host "  REMOTE_PATH = path to your website folder" -ForegroundColor Gray
-    Write-Host ""
-    Write-Host "Example:" -ForegroundColor White
-    Write-Host '  $SSH_USER = "u12345678"' -ForegroundColor Gray
-    Write-Host '  $REMOTE_PATH = "/home/u12345678/domains/silviosuperandolimites.com.br/public_html"' -ForegroundColor Gray
-    Write-Host ""
-    return
-}
-
-# Check if build exists
-if (!(Test-Path "frontend\build")) {
-    Write-Host "❌ Build folder not found!" -ForegroundColor Red
-    Write-Host "💡 Run: npm run build in frontend folder first" -ForegroundColor Yellow
-    Write-Host ""
-    return
-}
-
-Write-Host "📦 Configuration:" -ForegroundColor Cyan
-Write-Host "  Host: $SSH_HOST" -ForegroundColor White
-Write-Host "  User: $SSH_USER" -ForegroundColor White
-Write-Host "  Port: $SSH_PORT" -ForegroundColor White
-Write-Host "  Remote: $REMOTE_PATH" -ForegroundColor White
-Write-Host ""
-
-# Confirm
-Write-Host "⚠️  This will upload to the production server!" -ForegroundColor Yellow
-$confirm = Read-Host "Continue? (y/n)"
-
-if ($confirm -ne "y") {
-    Write-Host "❌ Cancelled" -ForegroundColor Red
-    return
-}
-
-Write-Host ""
-Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host " 🚀 Starting Upload..." -ForegroundColor Yellow
-Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host ""
-
-# Use SCP to upload
-Write-Host "📤 Uploading files via SCP..." -ForegroundColor Yellow
-Write-Host "   This may take a few minutes..." -ForegroundColor Gray
-Write-Host ""
-
-$source = "frontend\build\*"
-$destination = "${SSH_USER}@${SSH_HOST}:${REMOTE_PATH}"
-
-# SCP command
-scp -r -P $SSH_PORT $source $destination
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host ""
-    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-    Write-Host " ✅ DEPLOYMENT SUCCESSFUL!" -ForegroundColor Green
-    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "🌐 Your site is now live at:" -ForegroundColor Cyan
-    Write-Host "   https://silviosuperandolimites.com.br/" -ForegroundColor White
-    Write-Host ""
+# Load configuration
+$configPath = ".deploy-config.json"
+if (Test-Path $configPath) {
+    $config = Get-Content $configPath -Raw | ConvertFrom-Json
+    
+    if ($config.ssh.enabled) {
+        $sshUser = $config.ssh.user
+        $sshHost = $config.ssh.host
+        $remotePath = $config.ssh.path
+        $sshKeyPath = $config.ssh.key_path
+        $frontendBuildPath = "$($config.frontend.directory)/build/"
+    } else {
+        Write-Host ""
+        Write-Host "============================================================" -ForegroundColor Yellow
+        Write-Host " SSH Deployment Not Configured" -ForegroundColor Red
+        Write-Host "============================================================" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "To enable SSH deployment:" -ForegroundColor White
+        Write-Host "  1. Edit .deploy-config.json" -ForegroundColor Cyan
+        Write-Host "  2. Set ssh.enabled to true" -ForegroundColor Cyan
+        Write-Host "  3. Configure ssh.user, ssh.host, and ssh.path" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "Press Enter to continue..."
+        Read-Host
+        exit 0
+    }
 } else {
     Write-Host ""
-    Write-Host "❌ Upload failed!" -ForegroundColor Red
+    Write-Host "ERROR: .deploy-config.json not found!" -ForegroundColor Red
+    Write-Host "Please run deploy-manager.bat to create configuration." -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "💡 Troubleshooting:" -ForegroundColor Yellow
-    Write-Host "  1. Check your SSH key is set up" -ForegroundColor White
-    Write-Host "  2. Verify SSH_USER and REMOTE_PATH in script" -ForegroundColor White
-    Write-Host "  3. Test SSH connection: ssh $SSH_USER@$SSH_HOST" -ForegroundColor White
+    Write-Host "Press Enter to continue..."
+    Read-Host
+    exit 1
+}
+
+Write-Host ""
+Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host " SSH Deployment" -ForegroundColor Yellow
+Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host ""
+
+# Validate configuration
+if ($sshUser -eq "your_ssh_user" -or $sshHost -eq "your_server_ip" -or $remotePath -eq "/var/www/html") {
+    Write-Host "ERROR: SSH configuration incomplete!" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Please edit .deploy-config.json and set:" -ForegroundColor Yellow
+    Write-Host "  - ssh.user (your SSH username)" -ForegroundColor White
+    Write-Host "  - ssh.host (your server IP or domain)" -ForegroundColor White
+    Write-Host "  - ssh.path (remote directory path)" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Press Enter to continue..."
+    Read-Host
+    exit 1
+}
+
+# Check for SCP
+Write-Host "Checking for SCP client..." -ForegroundColor Yellow
+try {
+    $null = scp -V 2>&1
+    Write-Host "OK: SCP client found" -ForegroundColor Green
+} catch {
+    Write-Host "ERROR: SCP client not found!" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Install OpenSSH Client:" -ForegroundColor Yellow
+    Write-Host "  Windows: Settings -> Apps -> Optional Features -> OpenSSH Client" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Press Enter to continue..."
+    Read-Host
+    exit 1
+}
+
+Write-Host ""
+
+# Check/Build Frontend
+Write-Host "Checking frontend build..." -ForegroundColor Yellow
+if (-not (Test-Path $frontendBuildPath)) {
+    Write-Host "Frontend not built. Building now..." -ForegroundColor DarkYellow
+    try {
+        Push-Location $config.frontend.directory
+        npm run build
+        Pop-Location
+        Write-Host "OK: Frontend built" -ForegroundColor Green
+    } catch {
+        Write-Host "ERROR: Build failed - $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host ""
+        Write-Host "Press Enter to continue..."
+        Read-Host
+        exit 1
+    }
+} else {
+    Write-Host "OK: Frontend build found" -ForegroundColor Green
+}
+
+Write-Host ""
+
+# Perform deployment
+Write-Host "Uploading to $sshUser@$sshHost:$remotePath ..." -ForegroundColor Yellow
+Write-Host ""
+
+try {
+    # Build SCP command
+    $scpCmd = "scp -r `"$frontendBuildPath*`" `"${sshUser}@${sshHost}:${remotePath}`""
+    
+    # Add key if specified
+    if ($sshKeyPath -and (Test-Path $sshKeyPath)) {
+        $scpCmd = "scp -i `"$sshKeyPath`" -r `"$frontendBuildPath*`" `"${sshUser}@${sshHost}:${remotePath}`""
+    }
+    
+    Write-Host "Executing: $scpCmd" -ForegroundColor DarkGray
+    Write-Host ""
+    
+    Invoke-Expression $scpCmd
+    
+    Write-Host ""
+    Write-Host "============================================================" -ForegroundColor Cyan
+    Write-Host " Deployment Complete!" -ForegroundColor Green
+    Write-Host "============================================================" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "Files uploaded to: $remotePath" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "You may need to restart your web server." -ForegroundColor DarkYellow
+    Write-Host ""
+} catch {
+    Write-Host ""
+    Write-Host "ERROR: Deployment failed - $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Check:" -ForegroundColor Yellow
+    Write-Host "  - SSH credentials are correct" -ForegroundColor White
+    Write-Host "  - Server is reachable" -ForegroundColor White
+    Write-Host "  - You have write permissions to $remotePath" -ForegroundColor White
     Write-Host ""
 }
 
+Write-Host "Press Enter to continue..."
+Read-Host

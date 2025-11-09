@@ -1,22 +1,21 @@
 # Check Environment Variables Script
-# Validates environment configuration
+# Simple version without special characters
 
 Write-Host ""
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host " 🔐 Environment Variables Check" -ForegroundColor Yellow
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host " Environment Variables Check" -ForegroundColor Yellow
+Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host ""
 
 function Show-EnvFile {
     param($path, $name)
     
-    Write-Host "📁 $name (.env):" -ForegroundColor Cyan
+    Write-Host "$name (.env):" -ForegroundColor Cyan
     
     if (Test-Path $path) {
-        Write-Host "  ✅ $path exists" -ForegroundColor Green
+        Write-Host "  OK: $path exists" -ForegroundColor Green
         Write-Host ""
         
-        # Read and display (hiding sensitive values)
         $content = Get-Content $path
         foreach ($line in $content) {
             if ($line -match "^#" -or $line -match "^\s*$") {
@@ -24,16 +23,13 @@ function Show-EnvFile {
             } elseif ($line -match "=") {
                 $parts = $line -split "=", 2
                 $key = $parts[0]
-                $value = $parts[1]
+                $value = if ($parts.Length -gt 1) { $parts[1] } else { "" }
                 
-                # Check if it's a sensitive key
                 if ($key -match "(KEY|SECRET|PASSWORD|TOKEN|URL)") {
                     if ($value -and $value.Trim()) {
-                        Write-Host "  $key=" -NoNewline -ForegroundColor White
-                        Write-Host "[SET]" -ForegroundColor Green
+                        Write-Host "  $key=[SET]" -ForegroundColor Green
                     } else {
-                        Write-Host "  $key=" -NoNewline -ForegroundColor White
-                        Write-Host "[NOT SET]" -ForegroundColor Yellow
+                        Write-Host "  $key=[NOT SET]" -ForegroundColor Yellow
                     }
                 } else {
                     Write-Host "  $line" -ForegroundColor White
@@ -43,37 +39,37 @@ function Show-EnvFile {
             }
         }
     } else {
-        Write-Host "  ❌ $path not found!" -ForegroundColor Red
-        Write-Host "  💡 Create it from .env.example" -ForegroundColor Yellow
+        Write-Host "  ERROR: $path not found!" -ForegroundColor Red
+        Write-Host "  TIP: Create it from .env.example" -ForegroundColor Yellow
     }
     
     Write-Host ""
 }
 
-# Check Frontend .env
+# Check Frontend
 Show-EnvFile "frontend\.env" "Frontend"
 
-# Check Backend .env
+# Check Backend
 Show-EnvFile "backend\.env" "Backend"
 
-# Recommendations
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
-Write-Host " 💡 Recommendations:" -ForegroundColor Yellow
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+# Summary
+Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host " Recommendations:" -ForegroundColor Yellow
+Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host ""
 
 $warnings = @()
 
 if (!(Test-Path "frontend\.env")) {
-    $warnings += "  ⚠️  Create frontend/.env file"
+    $warnings += "  WARNING: Create frontend/.env file"
 }
 
 if (!(Test-Path "backend\.env")) {
-    $warnings += "  ⚠️  Create backend/.env file"
+    $warnings += "  WARNING: Create backend/.env file"
 }
 
 if ($warnings.Count -eq 0) {
-    Write-Host "  ✅ All environment files are present!" -ForegroundColor Green
+    Write-Host "  OK: All environment files present!" -ForegroundColor Green
 } else {
     foreach ($warning in $warnings) {
         Write-Host $warning -ForegroundColor Yellow
@@ -81,6 +77,5 @@ if ($warnings.Count -eq 0) {
 }
 
 Write-Host ""
-Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host ""
-
