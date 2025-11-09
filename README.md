@@ -2,8 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-19.0.0-blue.svg)](https://reactjs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110.1-green.svg)](https://fastapi.tiangolo.com/)
-[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://python.org/)
+[![Fastify](https://img.shields.io/badge/Fastify-4.26-green.svg)](https://fastify.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![Live](https://img.shields.io/badge/Live-silviosuperandolimites.com.br-success.svg)](https://silviosuperandolimites.com.br/)
 
 > Website oficial do livro "Superando Limites" de Silvio - Uma plataforma completa para marketing e vendas do livro.
@@ -40,7 +40,7 @@ Landing page moderna e performática para o livro "Superando Limites", desenvolv
 - **Lazy Loading** - Carregamento otimizado de imagens
 
 ### Backend
-- **FastAPI** - API REST moderna e rápida
+- **Fastify (Node.js)** - API REST moderna e ultra-rápida
 - **Supabase (PostgreSQL)** - Banco de dados para leads e analytics
 - **OpenRouter** - API de IA para chat com suporte ao livro
 
@@ -74,8 +74,7 @@ O site foi otimizado para máxima performance:
 
 ### Pré-requisitos
 
-- Node.js 16+
-- Python 3.9+
+- Node.js 18+
 - Conta Supabase (gratuita)
 
 ### Instalação
@@ -110,10 +109,8 @@ npm start
 
 # Backend
 cd backend
-python -m venv .venv
-.venv\Scripts\activate  # Windows
-pip install -r requirements.txt
-uvicorn server:app --reload
+npm install
+npm start
 ```
 
 ### Acesso

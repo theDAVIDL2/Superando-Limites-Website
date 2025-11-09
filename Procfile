@@ -1,3 +1,3 @@
 # Procfile for Heroku/Railway deployment
-web: cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT --workers 2
+web: cd backend && npm start
 
