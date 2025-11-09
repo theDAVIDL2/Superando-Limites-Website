@@ -2,8 +2,8 @@
 # https://nixpacks.com/docs/configuration/file
 
 [phases.setup]
-# Install Node.js 18 and npm
-nixPkgs = ["nodejs-18_x"]
+# Install Node.js 20 (LTS - Supabase recommended)
+nixPkgs = ["nodejs_20"]
 
 [phases.install]
 # Install dependencies
