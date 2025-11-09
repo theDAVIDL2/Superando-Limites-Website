@@ -1,11 +1,15 @@
 import React, { useEffect, Suspense, lazy } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Landing from "./pages/Landing";
 import { Toaster } from "./components/ui/sonner";
 import { throttleRAF } from "./utils/throttle";
+import { GiveawayBanner } from "./components/GiveawayBanner";
+import { GiveawayNotification } from "./components/GiveawayNotification";
 
 // Lazy load AIChatWidget for better initial bundle size
 const AIChatWidget = lazy(() => import('./components/AIChatWidget').then(module => ({ default: module.AIChatWidget })));
+const SorteioPage = lazy(() => import('./pages/Sorteio'));
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = BACKEND_URL ? `${BACKEND_URL}/api` : null;
@@ -189,14 +193,27 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <Ping />
-      <Toaster richColors position="top-right" />
-      <Landing />
-      <Suspense fallback={null}>
-        <AIChatWidget />
-      </Suspense>
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen">
+        <Ping />
+        <Toaster richColors position="top-right" />
+        <GiveawayBanner />
+        <GiveawayNotification />
+        
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/sorteio" element={
+            <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Carregando...</div>}>
+              <SorteioPage />
+            </Suspense>
+          } />
+        </Routes>
+        
+        <Suspense fallback={null}>
+          <AIChatWidget />
+        </Suspense>
+      </div>
+    </BrowserRouter>
   );
 }
 

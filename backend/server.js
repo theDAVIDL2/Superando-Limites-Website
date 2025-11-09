@@ -331,6 +331,111 @@ fastify.get('/api/newsletter', async (request, reply) => {
 });
 
 // ============================================
+// GIVEAWAY
+// ============================================
+const GIVEAWAY_ENABLED = process.env.GIVEAWAY_ENABLED === 'true';
+const GIVEAWAY_END_DATE = process.env.GIVEAWAY_END_DATE || null;
+const GIVEAWAY_PRIZE = process.env.GIVEAWAY_PRIZE_NAME || 'Camisa do Time';
+
+fastify.get('/api/giveaway/status', async (request, reply) => {
+  const now = new Date();
+  const endDate = GIVEAWAY_END_DATE ? new Date(GIVEAWAY_END_DATE) : null;
+  const isActive = GIVEAWAY_ENABLED && (!endDate || now < endDate);
+  
+  return {
+    active: isActive,
+    prize: GIVEAWAY_PRIZE,
+    end_date: GIVEAWAY_END_DATE
+  };
+});
+
+fastify.post('/api/giveaway', async (request, reply) => {
+  checkSupabase();
+  
+  // Check if giveaway is active
+  const now = new Date();
+  const endDate = GIVEAWAY_END_DATE ? new Date(GIVEAWAY_END_DATE) : null;
+  if (!GIVEAWAY_ENABLED || (endDate && now >= endDate)) {
+    throw { statusCode: 403, message: 'Giveaway is not active' };
+  }
+  
+  const {
+    full_name, email, whatsapp, has_book, instagram,
+    address_street, address_number, address_complement,
+    address_neighborhood, address_city, address_state, address_zipcode
+  } = request.body;
+  
+  // Validate required fields
+  if (!full_name || !email || !whatsapp || !address_street || !address_number ||
+      !address_neighborhood || !address_city || !address_state || !address_zipcode) {
+    throw { statusCode: 400, message: 'All fields are required' };
+  }
+  
+  try {
+    // Check if already entered
+    const { data: existing } = await supabase
+      .from('giveaway_entries')
+      .select('email, whatsapp')
+      .or(`email.eq.${email},whatsapp.eq.${whatsapp}`)
+      .maybeSingle();
+    
+    if (existing) {
+      throw { statusCode: 409, message: 'You have already entered this giveaway' };
+    }
+    
+    const entry = {
+      id: randomUUID(),
+      full_name, email, whatsapp,
+      has_book: has_book === true || has_book === 'true',
+      instagram: instagram || null,
+      address_street, address_number,
+      address_complement: address_complement || null,
+      address_neighborhood, address_city, address_state, address_zipcode,
+      ip_address: request.ip || null,
+      user_agent: request.headers['user-agent'] || null,
+      created_at: new Date().toISOString()
+    };
+    
+    const { error } = await supabase.from('giveaway_entries').insert(entry);
+    if (error) throw error;
+    
+    fastify.log.info(`Giveaway entry created: ${email}`);
+    return reply.code(201).send({
+      success: true,
+      message: 'Entry registered successfully',
+      entry_id: entry.id
+    });
+  } catch (error) {
+    if (error.statusCode) throw error;
+    fastify.log.error(`Error creating giveaway entry: ${error.message}`);
+    throw { statusCode: 500, message: `Database error: ${error.message}` };
+  }
+});
+
+// Admin endpoint to list entries
+fastify.get('/api/giveaway/entries', async (request, reply) => {
+  checkSupabase();
+  
+  if (ADMIN_API_KEY && request.headers['x-admin-key'] !== ADMIN_API_KEY) {
+    throw { statusCode: 401, message: 'unauthorized' };
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('giveaway_entries')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1000);
+    
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    fastify.log.error(`Error fetching giveaway entries: ${error.message}`);
+    throw { statusCode: 500, message: `Database error: ${error.message}` };
+  }
+});
+
+// ============================================
 // AI CHAT (OpenRouter Proxy)
 // ============================================
 fastify.post('/api/chat/complete', async (request, reply) => {
