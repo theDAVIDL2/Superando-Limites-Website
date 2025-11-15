@@ -273,13 +273,6 @@ Este projeto está sob a licença MIT - veja [LICENSE](LICENSE) para detalhes.
 
 ---
 
-## 👤 Autor
-
-**Davie Manuel Neymar** ([@grilojr09br](https://github.com/grilojr09br))
-
-**Projeto:** Superando Limites - Livro de Silvio
-
----
 
 ## 🔗 Links
 
