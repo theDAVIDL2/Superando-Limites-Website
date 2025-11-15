@@ -21,7 +21,6 @@ Landing page moderna e performática para o livro "Superando Limites", desenvolv
 - 📖 **Landing Page do Livro** - Design moderno e responsivo
 - 💳 **Integração Yampi** - Checkout direto para compra do livro
 - 💬 **Chat com IA** - Suporte automatizado ao cliente
-- 📧 **Captura de Leads** - Formulário integrado com N8N
 - 🖼️ **Imagens Otimizadas** - WebP + AVIF para carregamento ultra-rápido
 - 📱 **Mobile-First** - Experiência perfeita em dispositivos móveis
 
@@ -202,11 +201,6 @@ git push origin main
 - Link de pagamento customizado
 - Webhook para notificações
 
-### N8N (Automação)
-- Captura de leads por email
-- Notificações automáticas
-- Workflows personalizados
-
 ### OpenRouter (AI Chat)
 - Chat de suporte com IA
 - Respostas automáticas
@@ -248,7 +242,6 @@ deploy-manager.bat
 
 - Performance tracking integrado
 - Error logging automático
-- N8N webhooks para notificações
 - GitHub Actions para CI/CD
 
 ---
